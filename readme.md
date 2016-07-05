@@ -1,4 +1,4 @@
-# DraftJS To HTML
+# DraftJS TO HTML
 
 A library for converting DraftJS [ContentBlock](https://facebook.github.io/draft-js/docs/api-reference-content-block.html#content) to plain HTML.
 
