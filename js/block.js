@@ -311,7 +311,7 @@ function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection:
 export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
   const blockMarkup = [];
   if (isAtomicEntityBlock(block)) {
-    const entityMarkup = getEntityMarkup(block, entityMap);
+    const entityMarkup = getEntityMarkup(entityMap, block.entityRanges[0].key);
     if (entityMarkup) {
       blockMarkup.push(entityMarkup);
     }
