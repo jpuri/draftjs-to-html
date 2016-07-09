@@ -74,6 +74,8 @@ function getStyleArrayForBlock(block: Object): Object {
     BOLD: new Array(text.length),
     ITALIC: new Array(text.length),
     UNDERLINE: new Array(text.length),
+    STRIKETHROUGH: new Array(text.length),
+    CODE: new Array(text.length),
     COLOR: new Array(text.length),
     FONTSIZE: new Array(text.length),
     length: text.length,
@@ -116,6 +118,12 @@ export function getStylesAtOffset(inlineStyles: Object, offset: number): Object 
   if (inlineStyles.BOLD[offset]) {
     styles.BOLD = true;
   }
+  if (inlineStyles.STRIKETHROUGH[offset]) {
+    styles.STRIKETHROUGH = true;
+  }
+  if (inlineStyles.CODE[offset]) {
+    styles.CODE = true;
+  }
   return styles;
 }
 
@@ -149,6 +157,10 @@ export function addInlineStyleMarkup(style: string, content: string): string {
     return `<em>${content}</em>`;
   } else if (style === 'UNDERLINE') {
     return `<ins>${content}</ins>`;
+  } else if (style === 'STRIKETHROUGH') {
+    return `<del>${content}</del>`;
+  } else if (style === 'CODE') {
+    return `<code>${content}</code>`;
   }
   return content;
 }

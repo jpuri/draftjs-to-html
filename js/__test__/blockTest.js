@@ -23,6 +23,8 @@ describe('getStylesAtOffset test suite', () => {
       BOLD: [true, true],
       ITALIC: [false, false],
       UNDERLINE: [true, false],
+      STRIKETHROUGH: [false, false],
+      CODE: [true, false],
       COLOR: ['rgb(97,189,109)', 'rgb(26,188,156)'],
       FONTSIZE: [10, 20],
     };
@@ -72,10 +74,13 @@ describe('sameStyleAsPrevious test suite', () => {
       BOLD: [true, true, false],
       ITALIC: [false, false, true],
       UNDERLINE: [true, true, false],
+      STRIKETHROUGH: [true, true, false],
+      CODE: [true, true, false],
       COLOR: ['rgb(97,189,109)', 'rgb(26,188,156)', 'rgb(26,188,156)'],
       FONTSIZE: [10, 10, 20],
     };
-    const sameStyled = sameStyleAsPrevious(inlineStyles, ['BOLD', 'ITALIC', 'UNDERLINE'], 3);
+    const sameStyled = sameStyleAsPrevious(inlineStyles,
+      ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE'], 3);
     assert.isNotTrue(sameStyled);
   });
 });
@@ -87,6 +92,10 @@ describe('addInlineStyleMarkup test suite', () => {
   assert.equal(markup, '<em>test</em>');
   markup = addInlineStyleMarkup('UNDERLINE', 'test');
   assert.equal(markup, '<ins>test</ins>');
+  markup = addInlineStyleMarkup('STRIKETHROUGH', 'test');
+  assert.equal(markup, '<del>test</del>');
+  markup = addInlineStyleMarkup('CODE', 'test');
+  assert.equal(markup, '<code>test</code>');
 });
 
 describe('addStylePropertyMarkup test suite', () => {
