@@ -27,16 +27,19 @@ describe('getStylesAtOffset test suite', () => {
       CODE: [true, false],
       COLOR: ['rgb(97,189,109)', 'rgb(26,188,156)'],
       FONTSIZE: [10, 20],
+      FONTFAMILY: ['Arial', 'Georgia'],
     };
     let styles = getStylesAtOffset(inlineStyles, 0);
     assert.equal(styles.COLOR, 'rgb(97,189,109)');
     assert.equal(styles.FONTSIZE, 10);
+    assert.equal(styles.FONTFAMILY, 'Arial');
     assert.equal(styles.ITALIC, undefined);
     assert.equal(styles.UNDERLINE, true);
     assert.equal(styles.BOLD, true);
     styles = getStylesAtOffset(inlineStyles, 1);
     assert.equal(styles.COLOR, 'rgb(26,188,156)');
     assert.equal(styles.FONTSIZE, 20);
+    assert.equal(styles.FONTFAMILY, 'Georgia');
     assert.equal(styles.ITALIC, undefined);
     assert.equal(styles.UNDERLINE, undefined);
     assert.equal(styles.BOLD, true);
@@ -51,6 +54,7 @@ describe('sameStyleAsPrevious test suite', () => {
       UNDERLINE: [true, true, false],
       COLOR: ['rgb(97,189,109)', 'rgb(26,188,156)', 'rgb(26,188,156)'],
       FONTSIZE: [10, 10, 20],
+      FONTFAMILY: ['Arial', 'Arial', 'Georgia'],
       length: 3,
     };
     let sameStyled = sameStyleAsPrevious(inlineStyles, ['BOLD', 'ITALIC', 'UNDERLINE'], 1);
@@ -65,6 +69,7 @@ describe('sameStyleAsPrevious test suite', () => {
       UNDERLINE: [true, true, false],
       COLOR: ['rgb(97,189,109)', 'rgb(26,188,156)', 'rgb(26,188,156)'],
       FONTSIZE: [10, 10, 20],
+      FONTFAMILY: ['Arial', 'Arial', 'Georgia'],
     };
     const sameStyled = sameStyleAsPrevious(inlineStyles, ['BOLD', 'ITALIC', 'UNDERLINE'], 0);
     assert.isNotTrue(sameStyled);
@@ -78,6 +83,7 @@ describe('sameStyleAsPrevious test suite', () => {
       CODE: [true, true, false],
       COLOR: ['rgb(97,189,109)', 'rgb(26,188,156)', 'rgb(26,188,156)'],
       FONTSIZE: [10, 10, 20],
+      FONTFAMILY: ['Arial', 'Arial', 'Georgia'],
     };
     const sameStyled = sameStyleAsPrevious(inlineStyles,
       ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE'], 3);
@@ -99,10 +105,12 @@ describe('addInlineStyleMarkup test suite', () => {
 });
 
 describe('addStylePropertyMarkup test suite', () => {
-  let markup = addStylePropertyMarkup({ COLOR: 'red', FONTSIZE: 10 }, 'test');
-  assert.equal(markup, '<span style="color: red;font-size: 10;">test</span>');
+  let markup = addStylePropertyMarkup({ COLOR: 'red', FONTSIZE: 10, FONTFAMILY: 'Arial' }, 'test');
+  assert.equal(markup, '<span style="color: red;font-size: 10;font-family: Arial;">test</span>');
   markup = addStylePropertyMarkup({ COLOR: 'red' }, 'test');
   assert.equal(markup, '<span style="color: red;">test</span>');
+  markup = addStylePropertyMarkup({ FONTFAMILY: 'Arial' }, 'test');
+  assert.equal(markup, '<span style="font-family: Arial;">test</span>');
   markup = addStylePropertyMarkup({ BOLD: true }, 'test');
   assert.equal(markup, 'test');
   markup = addStylePropertyMarkup(undefined, 'test');

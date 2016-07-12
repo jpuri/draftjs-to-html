@@ -78,6 +78,7 @@ function getStyleArrayForBlock(block: Object): Object {
     CODE: new Array(text.length),
     COLOR: new Array(text.length),
     FONTSIZE: new Array(text.length),
+    FONTFAMILY: new Array(text.length),
     length: text.length,
   };
   if (inlineStyleRanges && inlineStyleRanges.length > 0) {
@@ -89,6 +90,8 @@ function getStyleArrayForBlock(block: Object): Object {
           inlineStyles.COLOR[i] = range.style;
         } else if (range.style.startsWith('fontsize-')) {
           inlineStyles.FONTSIZE[i] = range.style.substring(9, range.style.length);
+        } else if (range.style.startsWith('fontfamily-')) {
+          inlineStyles.FONTFAMILY[i] = range.style.substring(11, range.style.length);
         } else if (inlineStyles[range.style]) {
           inlineStyles[range.style][i] = true;
         }
@@ -108,6 +111,9 @@ export function getStylesAtOffset(inlineStyles: Object, offset: number): Object 
   }
   if (inlineStyles.FONTSIZE[offset]) {
     styles.FONTSIZE = inlineStyles.FONTSIZE[offset];
+  }
+  if (inlineStyles.FONTFAMILY[offset]) {
+    styles.FONTFAMILY = inlineStyles.FONTFAMILY[offset];
   }
   if (inlineStyles.UNDERLINE[offset]) {
     styles.UNDERLINE = true;
@@ -169,13 +175,16 @@ export function addInlineStyleMarkup(style: string, content: string): string {
 * Function returns html for text depending on inline style tags applicable to it.
 */
 export function addStylePropertyMarkup(styles: string, content: string): string {
-  if (styles && (styles.COLOR || styles.FONTSIZE)) {
+  if (styles && (styles.COLOR || styles.FONTSIZE || styles.FONTFAMILY)) {
     let styleString = 'style="';
     if (styles.COLOR) {
       styleString += `color: ${styles.COLOR};`;
     }
     if (styles.FONTSIZE) {
       styleString += `font-size: ${styles.FONTSIZE};`;
+    }
+    if (styles.FONTFAMILY) {
+      styleString += `font-family: ${styles.FONTFAMILY};`;
     }
     styleString += '"';
     return `<span ${styleString}>${content}</span>`;
@@ -304,7 +313,7 @@ function getInlineStyleSectionMarkup(block: Object, styleSection: Object): strin
 function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection: Object): string {
   const entitySectionMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
-    block, ['COLOR', 'FONTSIZE'], entitySection.start, entitySection.end
+    block, ['COLOR', 'FONTSIZE', 'FONTFAMILY'], entitySection.start, entitySection.end
   );
   inlineStyleSections.forEach((styleSection) => {
     entitySectionMarkup.push(getInlineStyleSectionMarkup(block, styleSection));
