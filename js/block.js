@@ -41,7 +41,7 @@ function getEntitySections(entityRanges: Object, blockLength: number): Array<Obj
     }
     sections.push({
       start: r.offset,
-      end: r.offset + r.length - 1,
+      end: r.offset + r.length,
       entityKey: r.key,
     });
     lastOffset = r.offset + r.length;
@@ -258,23 +258,45 @@ function getSectionText(text: Array<string>): string {
           return ch;
       }
     });
-    for (let i = 0; i < chars.length; i++) {
-      if (chars[i] === ' ') {
-        chars[i] = '&nbsp;';
-      } else {
-        break;
-      }
-    }
-    for (let i = chars.length - 1; i >= 0; i--) {
-      if (chars[i] === ' ') {
-        chars[i] = '&nbsp;';
-      } else {
-        break;
-      }
-    }
     return chars.join('');
   }
   return '';
+}
+
+/**
+* Replace leading blank spaces by &nbsp;
+*/
+export function trimLeadingZeros(sectionText: string): string {
+  if (sectionText) {
+    let replacedText = sectionText;
+    for (let i = 0; i < replacedText.length; i++) {
+      if (sectionText[i] === ' ') {
+        replacedText = replacedText.replace(' ', '&nbsp;');
+      } else {
+        break;
+      }
+    }
+    return replacedText;
+  }
+  return sectionText;
+}
+
+/**
+* Replace trailing blank spaces by &nbsp;
+*/
+export function trimTrailingZeros(sectionText: string): string {
+  if (sectionText) {
+    let replacedText = sectionText;
+    for (let i = replacedText.length - 1; i >= 0; i--) {
+      if (replacedText[i] === ' ') {
+        replacedText = `${replacedText.substring(0, i)}&nbsp;${replacedText.substring(i + 1)}`;
+      } else {
+        break;
+      }
+    }
+    return replacedText;
+  }
+  return sectionText;
 }
 
 /**
@@ -338,8 +360,15 @@ export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
     }
   } else {
     const entitySections = getEntitySections(block.entityRanges, block.text.length);
-    entitySections.forEach((section) => {
-      blockMarkup.push(getEntitySectionMarkup(block, entityMap, section));
+    entitySections.forEach((section, index) => {
+      let sectionText = getEntitySectionMarkup(block, entityMap, section);
+      if (index === 0) {
+        sectionText = trimLeadingZeros(sectionText);
+      }
+      if (index === entitySections.length - 1) {
+        sectionText = trimTrailingZeros(sectionText);
+      }
+      blockMarkup.push(sectionText);
     });
   }
   return blockMarkup.join('');
