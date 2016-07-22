@@ -77,6 +77,7 @@ function getStyleArrayForBlock(block: Object): Object {
     STRIKETHROUGH: new Array(text.length),
     CODE: new Array(text.length),
     COLOR: new Array(text.length),
+    BGCOLOR: new Array(text.length),
     FONTSIZE: new Array(text.length),
     FONTFAMILY: new Array(text.length),
     length: text.length,
@@ -87,11 +88,13 @@ function getStyleArrayForBlock(block: Object): Object {
       const length = offset + range.length;
       for (let i = offset; i < length; i++) {
         if (range.style.startsWith('color-')) {
-          inlineStyles.COLOR[i] = range.style;
+          inlineStyles.COLOR[i] = range.style.substring(6);
+        } else if (range.style.startsWith('bgcolor-')) {
+          inlineStyles.BGCOLOR[i] = range.style.substring(8);
         } else if (range.style.startsWith('fontsize-')) {
-          inlineStyles.FONTSIZE[i] = range.style.substring(9, range.style.length);
+          inlineStyles.FONTSIZE[i] = range.style.substring(9);
         } else if (range.style.startsWith('fontfamily-')) {
-          inlineStyles.FONTFAMILY[i] = range.style.substring(11, range.style.length);
+          inlineStyles.FONTFAMILY[i] = range.style.substring(11);
         } else if (inlineStyles[range.style]) {
           inlineStyles[range.style][i] = true;
         }
@@ -108,6 +111,9 @@ export function getStylesAtOffset(inlineStyles: Object, offset: number): Object 
   const styles = {};
   if (inlineStyles.COLOR[offset]) {
     styles.COLOR = inlineStyles.COLOR[offset];
+  }
+  if (inlineStyles.BGCOLOR[offset]) {
+    styles.BGCOLOR = inlineStyles.BGCOLOR[offset];
   }
   if (inlineStyles.FONTSIZE[offset]) {
     styles.FONTSIZE = inlineStyles.FONTSIZE[offset];
@@ -175,10 +181,13 @@ export function addInlineStyleMarkup(style: string, content: string): string {
 * Function returns html for text depending on inline style tags applicable to it.
 */
 export function addStylePropertyMarkup(styles: string, content: string): string {
-  if (styles && (styles.COLOR || styles.FONTSIZE || styles.FONTFAMILY)) {
+  if (styles && (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY)) {
     let styleString = 'style="';
     if (styles.COLOR) {
       styleString += `color: ${styles.COLOR};`;
+    }
+    if (styles.BGCOLOR) {
+      styleString += `background-color: ${styles.BGCOLOR};`;
     }
     if (styles.FONTSIZE) {
       styleString += `font-size: ${styles.FONTSIZE};`;
@@ -313,7 +322,7 @@ function getStyleTagSectionMarkup(styleSection: Object): string {
 
 
 /**
-* The method returns markup for section to which inline styles like color, font-size are applicable.
+* The method returns markup for section to which inline styles like color, background-color, font-size are applicable.
 */
 function getInlineStyleSectionMarkup(block: Object, styleSection: Object): string {
   const styleTagSections = getInlineStyleSections(
