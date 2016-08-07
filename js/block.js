@@ -7,6 +7,7 @@ import {
 * Mapping object of block to corresponding html tag.
 */
 const blockTypesMapping: Object = {
+  unstyled: 'p',
   'header-one': 'h1',
   'header-two': 'h2',
   'header-three': 'h3',
@@ -22,7 +23,7 @@ const blockTypesMapping: Object = {
 * Function will return HTML block tag for a block.
 */
 export function getBlockTag(type: string): string {
-  return type && blockTypesMapping[type] || 'p';
+  return type && blockTypesMapping[type];
 }
 
 /**
@@ -210,7 +211,7 @@ function getEntityMarkup(entityMap: Object, entityKey: number, text: string): st
     return `<a href="${entity.data.url}">${text}</a>`;
   }
   if (entity.type === 'IMAGE') {
-    return `<img src="${entity.data.src}" />`;
+    return `<img src="${entity.data.src}" style="float:${entity.data.alignment || 'none'}"/>`;
   }
   return text;
 }
@@ -322,7 +323,8 @@ function getStyleTagSectionMarkup(styleSection: Object): string {
 
 
 /**
-* The method returns markup for section to which inline styles like color, background-color, font-size are applicable.
+* The method returns markup for section to which inline styles
+like color, background-color, font-size are applicable.
 */
 function getInlineStyleSectionMarkup(block: Object, styleSection: Object): string {
   const styleTagSections = getInlineStyleSections(
@@ -389,8 +391,13 @@ export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
 export function getBlockMarkup(block: Object, entityMap: Object): string {
   const blockHtml = [];
   const blockTag = getBlockTag(block.type);
-  blockHtml.push(`<${blockTag}>`);
+  if (blockTag) {
+    blockHtml.push(`<${blockTag}>`);
+  }
   blockHtml.push(getBlockInnerMarkup(block, entityMap));
-  blockHtml.push(`</${blockTag}>\n`);
+  if (blockTag) {
+    blockHtml.push(`</${blockTag}>`);
+  }
+  blockHtml.push('\n');
   return blockHtml.join('');
 }
