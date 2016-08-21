@@ -1,6 +1,6 @@
 {
   "name": "draftjs-to-html",
-  "version": "0.2.5",
+  "version": "0.2.7",
   "description": "A library for draftjs to html conversion.",
   "main": "lib/index.js",
   "peerDependencies": {
@@ -29,9 +29,9 @@
     "flow-bin": "^0.30.0",
     "immutable": "^3.8.1",
     "mocha": "^3.0.2",
-    "react": "^15.3.1",
-    "react-addons-test-utils": "^15.3.1",
-    "react-dom": "^15.3.1",
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0",
+    "react-addons-test-utils": "^0.14.0",
     "rimraf": "^2.5.4",
     "sinon": "^1.17.5",
     "webpack": "^1.13.2",
