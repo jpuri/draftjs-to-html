@@ -27,6 +27,17 @@ export function getBlockTag(type: string): string {
 }
 
 /**
+* Function will return style string for a block.
+*/
+export function getBlockStyle(data: Object): string {
+  let styles = '';
+  forEach(data, (key, value) => {
+    styles += `${key}:${value};`;
+  });
+  return styles;
+}
+
+/**
 * The function returns an array of sections in blocks.
 * Sections will be areas in block which have same entity or no entity applicable to them.
 */
@@ -393,6 +404,10 @@ export function getBlockMarkup(block: Object, entityMap: Object): string {
   const blockTag = getBlockTag(block.type);
   if (blockTag) {
     blockHtml.push(`<${blockTag}>`);
+  }
+  const blockStyle = getBlockStyle(block.data);
+  if (blockStyle) {
+    blockHtml.push(` style="${blockStyle}"`);
   }
   blockHtml.push(getBlockInnerMarkup(block, entityMap));
   if (blockTag) {
