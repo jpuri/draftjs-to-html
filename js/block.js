@@ -98,7 +98,7 @@ function getStyleArrayForBlock(block: Object): Object {
     inlineStyleRanges.forEach((range) => {
       const offset = range.offset;
       const length = offset + range.length;
-      for (let i = offset; i < length; i++) {
+      for (let i = offset; i < length; i += 1) {
         if (range.style.startsWith('color-')) {
           inlineStyles.COLOR[i] = range.style.substring(6);
         } else if (range.style.startsWith('bgcolor-')) {
@@ -242,7 +242,7 @@ function getInlineStyleSections(
   if (text.length > 0) {
     const inlineStyles = getStyleArrayForBlock(block);
     let section;
-    for (let i = start; i < end; i++) {
+    for (let i = start; i < end; i += 1) {
       if (i !== start && sameStyleAsPrevious(inlineStyles, styles, i)) {
         section.text.push(text[i]);
         section.end = i + 1;
@@ -290,7 +290,7 @@ function getSectionText(text: Array<string>): string {
 export function trimLeadingZeros(sectionText: string): string {
   if (sectionText) {
     let replacedText = sectionText;
-    for (let i = 0; i < replacedText.length; i++) {
+    for (let i = 0; i < replacedText.length; i += 1) {
       if (sectionText[i] === ' ') {
         replacedText = replacedText.replace(' ', '&nbsp;');
       } else {
@@ -308,7 +308,7 @@ export function trimLeadingZeros(sectionText: string): string {
 export function trimTrailingZeros(sectionText: string): string {
   if (sectionText) {
     let replacedText = sectionText;
-    for (let i = replacedText.length - 1; i >= 0; i--) {
+    for (let i = replacedText.length - 1; i >= 0; i -= 1) {
       if (replacedText[i] === ' ') {
         replacedText = `${replacedText.substring(0, i)}&nbsp;${replacedText.substring(i + 1)}`;
       } else {

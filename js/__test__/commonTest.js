@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import { forEach, isEmptyString } from '../common';
 import { spy } from 'sinon';
+import { forEach, isEmptyString } from '../common';
 
 describe('forEach test suite', () => {
   const obj = {

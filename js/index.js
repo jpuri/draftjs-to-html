@@ -1,8 +1,8 @@
 /* @flow */
 
+import { ContentState } from 'draft-js';
 import { getBlockMarkup } from './block';
 import { isList, getListMarkup } from './list';
-import { ContentState } from 'draft-js';
 
 /**
 * The funciton will generate html markup for given draftjs editorContent.

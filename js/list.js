@@ -28,21 +28,19 @@ export function getListMarkup(listBlocks: Array<Object>, entityMap: Object): str
     let nestedBlock = false;
     if (!previousBlock) {
       listHtml.push(`<${getBlockTag(block.type)}>\n`);
-    } else {
-      if (previousBlock.type !== block.type) {
-        listHtml.push(`</${getBlockTag(previousBlock.type)}>\n`);
-        listHtml.push(`<${getBlockTag(block.type)}>\n`);
-      } else if (previousBlock.depth === block.depth) {
-        if (nestedListBlock && nestedListBlock.length > 0) {
-          listHtml.push('<li>\n');
-          listHtml.push(getListMarkup(nestedListBlock));
-          listHtml.push('</li>\n');
-          nestedListBlock = [];
-        }
-      } else {
-        nestedBlock = true;
-        nestedListBlock.push(block);
+    } else if (previousBlock.type !== block.type) {
+      listHtml.push(`</${getBlockTag(previousBlock.type)}>\n`);
+      listHtml.push(`<${getBlockTag(block.type)}>\n`);
+    } else if (previousBlock.depth === block.depth) {
+      if (nestedListBlock && nestedListBlock.length > 0) {
+        listHtml.push('<li>\n');
+        listHtml.push(getListMarkup(nestedListBlock));
+        listHtml.push('</li>\n');
+        nestedListBlock = [];
       }
+    } else {
+      nestedBlock = true;
+      nestedListBlock.push(block);
     }
     if (!nestedBlock) {
       listHtml.push('<li>');

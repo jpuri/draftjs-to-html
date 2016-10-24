@@ -8,7 +8,7 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, '../lib'),
-    filename: 'index.js',
+    filename: 'draftjs-to-html.js',
     libraryTarget: 'commonjs2',
   },
   plugins: [

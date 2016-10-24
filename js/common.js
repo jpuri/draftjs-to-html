@@ -6,7 +6,7 @@
 export function forEach(obj: Object, callback: Function) {
   if (obj) {
     for (const key in obj) { // eslint-disable-line no-restricted-syntax
-      if (obj.hasOwnProperty(key)) {
+      if ({}.hasOwnProperty.call(obj, key)) {
         callback(key, obj[key]);
       }
     }

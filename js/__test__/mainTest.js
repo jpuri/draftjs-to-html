@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import draftToHtml from '../index';
 import { convertFromHTML, ContentState, convertToRaw } from 'draft-js';
+import draftToHtml from '../index';
 
 describe('draftToHtml test suite', () => {
   it('should return correct html', () => {
