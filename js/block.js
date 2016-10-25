@@ -403,12 +403,13 @@ export function getBlockMarkup(block: Object, entityMap: Object): string {
   const blockHtml = [];
   const blockTag = getBlockTag(block.type);
   if (blockTag) {
-    blockHtml.push(`<${blockTag}>`);
+    blockHtml.push(`<${blockTag}`);
   }
   const blockStyle = getBlockStyle(block.data);
   if (blockStyle) {
     blockHtml.push(` style="${blockStyle}"`);
   }
+  blockHtml.push('>');
   blockHtml.push(getBlockInnerMarkup(block, entityMap));
   if (blockTag) {
     blockHtml.push(`</${blockTag}>`);
