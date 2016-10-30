@@ -40,10 +40,10 @@ Following is the list of conversions it supports:
     - replace `\n` with `<br>\n`
     - replace `<` with `&lt;`
     - replace `>` with `&gt;`
-    
+
 2. Converts ordered and unordered list blocks with depths to nested structure of `<ul>, <ol>` and `<li>`.
 
-3. Converts inline styles BOLD, ITALIC, UNDERLINE to corresponding HTML tags: `<strong>, <em>, <ins>`.
+3. Converts inline styles BOLD, ITALIC, UNDERLINE, CODE, SUPERSCRIPT, SUBSCRIPT to corresponding HTML tags: `<strong>, <em>, <ins>, <code>, <sup>, <sub>`.
 
 4. Converts inline styles color, fontsize to a span tag with inline style details:
 `<span style="color:xyz;font-size:xx">`. The inline styles should start with strings `color` or `font-size` like `color-red`, `color-green` or `fontsize-12`, `fontsize-20`.
