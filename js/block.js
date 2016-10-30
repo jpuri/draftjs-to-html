@@ -88,6 +88,8 @@ function getStyleArrayForBlock(block: Object): Object {
     UNDERLINE: new Array(text.length),
     STRIKETHROUGH: new Array(text.length),
     CODE: new Array(text.length),
+    SUPERSCRIPT: new Array(text.length),
+    SUBSCRIPT: new Array(text.length),
     COLOR: new Array(text.length),
     BGCOLOR: new Array(text.length),
     FONTSIZE: new Array(text.length),
@@ -148,6 +150,12 @@ export function getStylesAtOffset(inlineStyles: Object, offset: number): Object 
   if (inlineStyles.CODE[offset]) {
     styles.CODE = true;
   }
+  if (inlineStyles.SUBSCRIPT[offset]) {
+    styles.SUBSCRIPT = true;
+  }
+  if (inlineStyles.SUPERSCRIPT[offset]) {
+    styles.SUPERSCRIPT = true;
+  }
   return styles;
 }
 
@@ -185,6 +193,10 @@ export function addInlineStyleMarkup(style: string, content: string): string {
     return `<del>${content}</del>`;
   } else if (style === 'CODE') {
     return `<code>${content}</code>`;
+  } else if (style === 'SUPERSCRIPT') {
+    return `<sup>${content}</sup>`;
+  } else if (style === 'SUBSCRIPT') {
+    return `<sub>${content}</sub>`;
   }
   return content;
 }
@@ -339,7 +351,7 @@ like color, background-color, font-size are applicable.
 */
 function getInlineStyleSectionMarkup(block: Object, styleSection: Object): string {
   const styleTagSections = getInlineStyleSections(
-    block, ['BOLD', 'ITALIC', 'UNDERLINE'], styleSection.start, styleSection.end
+    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], styleSection.start, styleSection.end
   );
   let styleTagSectionText = '';
   styleTagSections.forEach((styleTagSection) => {
