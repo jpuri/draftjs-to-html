@@ -13,8 +13,8 @@ export default function draftToHtml(editorContent: ContentState): string {
     const { blocks, entityMap } = editorContent;
     if (blocks && blocks.length > 0) {
       let listBlocks = [];
-      editorContent.blocks.forEach((block) => {
-        if (isList(block)) {
+      blocks.forEach((block) => {
+        if (isList(block.type)) {
           listBlocks.push(block);
         } else {
           if (listBlocks.length > 0) {

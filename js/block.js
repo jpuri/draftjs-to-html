@@ -4,7 +4,7 @@ import {
 } from './common';
 
 /**
-* Mapping object of block to corresponding html tag.
+* Mapping block-type to corresponding html tag.
 */
 const blockTypesMapping: Object = {
   unstyled: 'p',
@@ -20,7 +20,7 @@ const blockTypesMapping: Object = {
 };
 
 /**
-* Function will return HTML block tag for a block.
+* Function will return HTML tag for a block.
 */
 export function getBlockTag(type: string): string {
   return type && blockTypesMapping[type];
@@ -38,8 +38,8 @@ export function getBlockStyle(data: Object): string {
 }
 
 /**
-* The function returns an array of sections in blocks.
-* Sections will be areas in block which have same entity or no entity applicable to them.
+* The function returns an array of entity-sections in blocks.
+* These will be areas in block which have same entity or no entity applicable to them.
 */
 function getEntitySections(entityRanges: Object, blockLength: number): Array<Object> {
   const sections = [];
@@ -202,9 +202,35 @@ export function addInlineStyleMarkup(style: string, content: string): string {
 }
 
 /**
+* The function returns text for given section of block after doing required character replacements.
+*/
+function getSectionText(text: Array<string>): string {
+  if (text && text.length > 0) {
+    const chars = text.map((ch) => {
+      switch (ch) {
+        case '\n':
+          return '<br>\n';
+        case '&':
+          return '&amp;';
+        case '<':
+          return '&lt;';
+        case '>':
+          return '&gt;';
+        default:
+          return ch;
+      }
+    });
+    return chars.join('');
+  }
+  return '';
+}
+
+/**
 * Function returns html for text depending on inline style tags applicable to it.
 */
-export function addStylePropertyMarkup(styles: string, content: string): string {
+export function addStylePropertyMarkup(styleSection: Object): string {
+  const { styles, text } = styleSection;
+  const content = getSectionText(text);
   if (styles && (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY)) {
     let styleString = 'style="';
     if (styles.COLOR) {
@@ -273,30 +299,6 @@ function getInlineStyleSections(
 }
 
 /**
-* The function returns text for given section of block after doing required character replacements.
-*/
-function getSectionText(text: Array<string>): string {
-  if (text && text.length > 0) {
-    const chars = text.map((ch) => {
-      switch (ch) {
-        case '\n':
-          return '<br>\n';
-        case '&':
-          return '&amp;';
-        case '<':
-          return '&lt;';
-        case '>':
-          return '&gt;';
-        default:
-          return ch;
-      }
-    });
-    return chars.join('');
-  }
-  return '';
-}
-
-/**
 * Replace leading blank spaces by &nbsp;
 */
 export function trimLeadingZeros(sectionText: string): string {
@@ -334,14 +336,14 @@ export function trimTrailingZeros(sectionText: string): string {
 
 /**
 * The method returns markup for section to which inline styles
-* like BOLD, UNDERLINE and ITALIC are applicable.
+* like BOLD, ITALIC, UNDERLINE, STRIKETHROUGH, CODE, SUPERSCRIPT, SUBSCRIPT are applicable.
 */
-function getStyleTagSectionMarkup(styleSection: Object): string {
-  let text = getSectionText(styleSection.text);
-  forEach(styleSection.styles, (style, value) => {
-    text = addInlineStyleMarkup(style, text, value);
+function getStyleTagSectionMarkup(styles: Object, text: string): string {
+  let content = text;
+  forEach(styles, (style, value) => {
+    content = addInlineStyleMarkup(style, content, value);
   });
-  return text;
+  return content;
 }
 
 
@@ -350,15 +352,16 @@ function getStyleTagSectionMarkup(styleSection: Object): string {
 like color, background-color, font-size are applicable.
 */
 function getInlineStyleSectionMarkup(block: Object, styleSection: Object): string {
-  const styleTagSections = getInlineStyleSections(
-    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], styleSection.start, styleSection.end
+  const stylePropertySections = getInlineStyleSections(
+    block, ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY'], styleSection.start, styleSection.end
   );
-  let styleTagSectionText = '';
-  styleTagSections.forEach((styleTagSection) => {
-    styleTagSectionText += getStyleTagSectionMarkup(styleTagSection);
+  let styleSectionText = '';
+  stylePropertySections.forEach((stylePropertySection) => {
+    styleSectionText += addStylePropertyMarkup(stylePropertySection);
   });
-  styleTagSectionText = addStylePropertyMarkup(styleSection.styles, styleTagSectionText);
-  return styleTagSectionText;
+  styleSectionText =
+    getStyleTagSectionMarkup(styleSection.styles, styleSectionText);
+  return styleSectionText;
 }
 
 /**
@@ -369,7 +372,7 @@ function getInlineStyleSectionMarkup(block: Object, styleSection: Object): strin
 function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection: Object): string {
   const entitySectionMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
-    block, ['COLOR', 'FONTSIZE', 'FONTFAMILY'], entitySection.start, entitySection.end
+    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], entitySection.start, entitySection.end
   );
   inlineStyleSections.forEach((styleSection) => {
     entitySectionMarkup.push(getInlineStyleSectionMarkup(block, styleSection));
@@ -386,25 +389,21 @@ function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection:
 * special characters like newlines or blank spaces.
 */
 export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
-  const blockMarkup = [];
   if (isAtomicEntityBlock(block)) {
-    const entityMarkup = getEntityMarkup(entityMap, block.entityRanges[0].key);
-    if (entityMarkup) {
-      blockMarkup.push(entityMarkup);
-    }
-  } else {
-    const entitySections = getEntitySections(block.entityRanges, block.text.length);
-    entitySections.forEach((section, index) => {
-      let sectionText = getEntitySectionMarkup(block, entityMap, section);
-      if (index === 0) {
-        sectionText = trimLeadingZeros(sectionText);
-      }
-      if (index === entitySections.length - 1) {
-        sectionText = trimTrailingZeros(sectionText);
-      }
-      blockMarkup.push(sectionText);
-    });
+    return getEntityMarkup(entityMap, block.entityRanges[0].key);
   }
+  const blockMarkup = [];
+  const entitySections = getEntitySections(block.entityRanges, block.text.length);
+  entitySections.forEach((section, index) => {
+    let sectionText = getEntitySectionMarkup(block, entityMap, section);
+    if (index === 0) {
+      sectionText = trimLeadingZeros(sectionText);
+    }
+    if (index === entitySections.length - 1) {
+      sectionText = trimTrailingZeros(sectionText);
+    }
+    blockMarkup.push(sectionText);
+  });
   return blockMarkup.join('');
 }
 

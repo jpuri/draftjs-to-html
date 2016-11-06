@@ -45,6 +45,8 @@ describe('getStylesAtOffset test suite', () => {
       UNDERLINE: [true, false],
       STRIKETHROUGH: [false, false],
       CODE: [true, false],
+      SUBSCRIPT: [true, false],
+      SUPERSCRIPT: [true, false],
       COLOR: ['rgb(97,189,109)', 'rgb(26,188,156)'],
       BGCOLOR: ['rgb(99,199,199)', 'rgb(28,189,176)'],
       FONTSIZE: [10, 20],
@@ -57,6 +59,8 @@ describe('getStylesAtOffset test suite', () => {
     assert.equal(styles.FONTFAMILY, 'Arial');
     assert.equal(styles.ITALIC, undefined);
     assert.equal(styles.UNDERLINE, true);
+    assert.equal(styles.SUBSCRIPT, true);
+    assert.equal(styles.SUPERSCRIPT, true);
     assert.equal(styles.BOLD, true);
     styles = getStylesAtOffset(inlineStyles, 1);
     assert.equal(styles.COLOR, 'rgb(26,188,156)');
@@ -65,6 +69,8 @@ describe('getStylesAtOffset test suite', () => {
     assert.equal(styles.FONTFAMILY, 'Georgia');
     assert.equal(styles.ITALIC, undefined);
     assert.equal(styles.UNDERLINE, undefined);
+    assert.equal(styles.SUBSCRIPT, undefined);
+    assert.equal(styles.SUPERSCRIPT, undefined);
     assert.equal(styles.BOLD, true);
   });
 });
@@ -131,23 +137,26 @@ describe('addInlineStyleMarkup test suite', () => {
 
 describe('addStylePropertyMarkup test suite', () => {
   let markup = addStylePropertyMarkup({
-    COLOR: 'red',
-    BGCOLOR: 'pink',
-    FONTSIZE: 10,
-    FONTFAMILY: 'Arial',
-  }, 'test');
+    styles: {
+      COLOR: 'red',
+      BGCOLOR: 'pink',
+      FONTSIZE: 10,
+      FONTFAMILY: 'Arial',
+    },
+    text: ['t', 'e', 's', 't'],
+  });
   assert.equal(
     markup,
     '<span style="color: red;background-color: pink;font-size: 10;font-family: Arial;">test</span>'
   );
-  markup = addStylePropertyMarkup({ COLOR: 'red' }, 'test');
+  markup = addStylePropertyMarkup({ styles: { COLOR: 'red' }, text: ['t', 'e', 's', 't'] });
   assert.equal(markup, '<span style="color: red;">test</span>');
-  markup = addStylePropertyMarkup({ BGCOLOR: 'pink' }, 'test');
+  markup = addStylePropertyMarkup({ styles: { BGCOLOR: 'pink' }, text: ['t', 'e', 's', 't'] });
   assert.equal(markup, '<span style="background-color: pink;">test</span>');
-  markup = addStylePropertyMarkup({ FONTFAMILY: 'Arial' }, 'test');
+  markup = addStylePropertyMarkup({ styles: { FONTFAMILY: 'Arial' }, text: ['t', 'e', 's', 't'] });
   assert.equal(markup, '<span style="font-family: Arial;">test</span>');
-  markup = addStylePropertyMarkup({ BOLD: true }, 'test');
+  markup = addStylePropertyMarkup({ styles: { BOLD: true }, text: ['t', 'e', 's', 't'] });
   assert.equal(markup, 'test');
-  markup = addStylePropertyMarkup(undefined, 'test');
+  markup = addStylePropertyMarkup({ styles: undefined, text: ['t', 'e', 's', 't'] });
   assert.equal(markup, 'test');
 });
