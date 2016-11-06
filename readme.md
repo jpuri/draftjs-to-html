@@ -1,6 +1,6 @@
 # DraftJS TO HTML
 
-A library for converting DraftJS [ContentBlock](https://facebook.github.io/draft-js/docs/api-reference-content-block.html#content) to plain HTML.
+A library for converting DraftJS Editor content to plain HTML.
 
 This is draft to HTML library I wrote for one of my projects. I am open-sourcing it so that others can also be benefitted from my work.
 
@@ -13,7 +13,7 @@ This is draft to HTML library I wrote for one of my projects. I am open-sourcing
 ```
 import draftToHtml from 'draftjs-to-html';
 
-const contentState = editorState.getCurrentContent();
+const rawContentState = convertToRaw(editorState.getCurrentContent());
 const markup = draftToHtml(contentState);
 ```
 
@@ -43,15 +43,16 @@ Following is the list of conversions it supports:
 
 2. Converts ordered and unordered list blocks with depths to nested structure of `<ul>, <ol>` and `<li>`.
 
-3. Converts inline styles BOLD, ITALIC, UNDERLINE, CODE, SUPERSCRIPT, SUBSCRIPT to corresponding HTML tags: `<strong>, <em>, <ins>, <code>, <sup>, <sub>`.
+3. Converts inline styles BOLD, ITALIC, UNDERLINE, STRIKETHROUGH, CODE, SUPERSCRIPT, SUBSCRIPT to corresponding HTML tags: `<strong>, <em>, <ins>, <code>, <sup>, <sub>`.
 
-4. Converts inline styles color, fontsize to a span tag with inline style details:
+4. Converts inline styles color, background-color, font-size, font-family to a span tag with inline style details:
 `<span style="color:xyz;font-size:xx">`. The inline styles should start with strings `color` or `font-size` like `color-red`, `color-green` or `fontsize-12`, `fontsize-20`.
 
 5. Converts entity range of type link to anchor tag using entity data url for href: `<a href="url" />`.
 
 6. Converts atomic entity image to image tag using entity data src for image source: `<img src="src" />`.
 
+7. Adding style property to block tag for block level styles like text-align: `<p style="text-align: right">text</p>`.
 
 ## License
 MIT.
