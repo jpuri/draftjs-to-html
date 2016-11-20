@@ -256,6 +256,9 @@ export function addStylePropertyMarkup(styleSection: Object): string {
 */
 function getEntityMarkup(entityMap: Object, entityKey: number, text: string): string {
   const entity = entityMap[entityKey];
+  if (entity.type === 'MENTION') {
+    return `<a href="${entity.data.url}" class="wysiwyg-mention" data-value="${entity.data.value}">${text}</a>`;
+  }
   if (entity.type === 'LINK') {
     return `<a href="${entity.data.url}">${text}</a>`;
   }

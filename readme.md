@@ -50,9 +50,11 @@ Following is the list of conversions it supports:
 
 5. Converts entity range of type link to anchor tag using entity data url for href: `<a href="url" />`.
 
-6. Converts atomic entity image to image tag using entity data src for image source: `<img src="src" />`.
+6. Converts entity range of type mention to anchor tag using entity data url for href and also adds class to it: `<a href="url" class="wysiwyg-mention" />`.
 
-7. Adding style property to block tag for block level styles like text-align: `<p style="text-align: right">text</p>`.
+7. Converts atomic entity image to image tag using entity data src for image source: `<img src="src" />`.
+
+8. Adding style property to block tag for block level styles like text-align: `<p style="text-align: right">text</p>`.
 
 ## License
 MIT.
