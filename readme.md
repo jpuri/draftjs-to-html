@@ -54,7 +54,9 @@ Following is the list of conversions it supports:
 
 7. Converts atomic entity image to image tag using entity data src for image source: `<img src="src" />`.
 
-8. Adding style property to block tag for block level styles like text-align: `<p style="text-align: right">text</p>`.
+8. Converts embedded links to iFrames.
+
+9. Adding style property to block tag for block level styles like text-align: `<p style="text-align: right">text</p>`.
 
 ## License
 MIT.
