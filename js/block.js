@@ -266,7 +266,7 @@ function getEntityMarkup(entityMap: Object, entityKey: number, text: string): st
     return `<img src="${entity.data.src}" style="float:${entity.data.alignment || 'none'}"/>`;
   }
   if (entity.type === 'EMBEDDED_LINK') {
-    return `<iframe width="100%" height="315px" src=${entity.data.link} frameBorder="0" allowFullScreen />`;
+    return `<iframe width="100%" height="315px" src="${entity.data.link}" frameBorder="0" allowFullScreen />`;
   }
   return text;
 }
