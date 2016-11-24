@@ -416,7 +416,7 @@ export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
 /**
 * Function will return html for the block.
 */
-export function getBlockMarkup(block: Object, entityMap: Object): string {
+export function getBlockMarkup(block: Object, entityMap: Object, directional: boolean): string {
   const blockHtml = [];
   const blockTag = getBlockTag(block.type);
   if (blockTag) {
@@ -425,6 +425,9 @@ export function getBlockMarkup(block: Object, entityMap: Object): string {
   const blockStyle = getBlockStyle(block.data);
   if (blockStyle) {
     blockHtml.push(` style="${blockStyle}"`);
+  }
+  if (directional) {
+    blockHtml.push(' dir = "auto"');
   }
   blockHtml.push('>');
   blockHtml.push(getBlockInnerMarkup(block, entityMap));
