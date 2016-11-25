@@ -395,9 +395,6 @@ function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection:
 * special characters like newlines or blank spaces.
 */
 export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
-  if (isAtomicEntityBlock(block)) {
-    return getEntityMarkup(entityMap, block.entityRanges[0].key);
-  }
   const blockMarkup = [];
   const entitySections = getEntitySections(block.entityRanges, block.text.length);
   entitySections.forEach((section, index) => {
@@ -418,21 +415,23 @@ export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
 */
 export function getBlockMarkup(block: Object, entityMap: Object, directional: boolean): string {
   const blockHtml = [];
-  const blockTag = getBlockTag(block.type);
-  if (blockTag) {
-    blockHtml.push(`<${blockTag}`);
-  }
-  const blockStyle = getBlockStyle(block.data);
-  if (blockStyle) {
-    blockHtml.push(` style="${blockStyle}"`);
-  }
-  if (directional) {
-    blockHtml.push(' dir = "auto"');
-  }
-  blockHtml.push('>');
-  blockHtml.push(getBlockInnerMarkup(block, entityMap));
-  if (blockTag) {
-    blockHtml.push(`</${blockTag}>`);
+  if (isAtomicEntityBlock(block)) {
+    blockHtml.push(getEntityMarkup(entityMap, block.entityRanges[0].key));
+  } else {
+    const blockTag = getBlockTag(block.type);
+    if (blockTag) {
+      blockHtml.push(`<${blockTag}`);
+      const blockStyle = getBlockStyle(block.data);
+      if (blockStyle) {
+        blockHtml.push(` style="${blockStyle}"`);
+      }
+      if (directional) {
+        blockHtml.push(' dir = "auto"');
+      }
+      blockHtml.push('>');
+      blockHtml.push(getBlockInnerMarkup(block, entityMap));
+      blockHtml.push(`</${blockTag}>`);
+    }
   }
   blockHtml.push('\n');
   return blockHtml.join('');
