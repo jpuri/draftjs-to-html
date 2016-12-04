@@ -263,10 +263,10 @@ function getEntityMarkup(entityMap: Object, entityKey: number, text: string): st
     return `<a href="${entity.data.url}">${entity.data.text}</a>`;
   }
   if (entity.type === 'IMAGE') {
-    return `<img src="${entity.data.src}" style="float:${entity.data.alignment || 'none'}"/>`;
+    return `<img src="${entity.data.src}" style="float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
   }
   if (entity.type === 'EMBEDDED_LINK') {
-    return `<iframe width="100%" height="315px" src="${entity.data.link}" frameBorder="0" allowFullScreen />`;
+    return `<iframe width="${entity.data.width}" height="${entity.data.height}" src="${entity.data.link}" frameBorder="0" allowFullScreen />`;
   }
   return text;
 }
