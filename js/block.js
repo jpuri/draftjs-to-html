@@ -38,13 +38,72 @@ export function getBlockStyle(data: Object): string {
 }
 
 /**
+* The function returns an array of mention-sections in blocks.
+* These will be areas in block which have mentions applicable to them.
+*/
+function getMentionRanges(blockText: string, mentionConfig: Object): Array<Object> {
+  const sections = [];
+  if (mentionConfig) {
+    let text = blockText;
+    let startIndex = 0;
+    let counter = 0;
+    for (;text.length > 0 && startIndex >= 0;) {
+      if (text[0] === mentionConfig.trigger) {
+        startIndex = 0;
+        counter = 0;
+        text = text.substr(mentionConfig.trigger.length);
+      } else {
+        startIndex = text.indexOf(mentionConfig.separator + mentionConfig.trigger);
+        if (startIndex >= 0) {
+          text = text.substr(startIndex + (mentionConfig.separator + mentionConfig.trigger).length);
+          counter += startIndex + mentionConfig.separator.length;
+        }
+      }
+      if (startIndex >= 0) {
+        const endIndex =
+          blockText.indexOf(mentionConfig.separator) >= 0
+          ? text.indexOf(mentionConfig.separator)
+          : text.length;
+        const mentionText = text.substr(0, endIndex);
+        const mentionPresent =
+          mentionConfig.suggestions.filter(suggestion => suggestion.value === mentionText);
+        if (mentionPresent && mentionPresent.length > 0) {
+          sections.push({
+            offset: counter,
+            length: mentionText.length + mentionConfig.trigger.length,
+            mention: mentionPresent[0],
+            type: 'MENTION',
+          });
+        }
+        counter += mentionConfig.trigger.length;
+      }
+    }
+  }
+  return sections;
+}
+
+/**
 * The function returns an array of entity-sections in blocks.
 * These will be areas in block which have same entity or no entity applicable to them.
 */
-function getEntitySections(entityRanges: Object, blockLength: number): Array<Object> {
+function getSections(
+  block: Object,
+  mentionConfig: Object
+): Array<Object> {
   const sections = [];
   let lastOffset = 0;
-  entityRanges.forEach((r) => {
+  let sectionRanges = block.entityRanges.map((range) => {
+    const { offset, length, key } = range;
+    return {
+      offset,
+      length,
+      key,
+      type: 'ENTITY',
+    };
+  });
+  sectionRanges = sectionRanges.concat(getMentionRanges(block.text, mentionConfig));
+  sectionRanges = sectionRanges.sort((s1, s2) => s1.offset - s2.offset);
+  sectionRanges.forEach((r) => {
     if (r.offset > lastOffset) {
       sections.push({
         start: lastOffset,
@@ -55,13 +114,15 @@ function getEntitySections(entityRanges: Object, blockLength: number): Array<Obj
       start: r.offset,
       end: r.offset + r.length,
       entityKey: r.key,
+      type: r.type,
+      mention: r.mention,
     });
     lastOffset = r.offset + r.length;
   });
-  if (lastOffset < blockLength) {
+  if (lastOffset < block.text.length) {
     sections.push({
       start: lastOffset,
-      end: blockLength,
+      end: block.text.length,
     });
   }
   return sections;
@@ -256,11 +317,8 @@ export function addStylePropertyMarkup(styleSection: Object): string {
 */
 function getEntityMarkup(entityMap: Object, entityKey: number, text: string): string {
   const entity = entityMap[entityKey];
-  if (entity.type === 'MENTION') {
-    return `<a href="${entity.data.url}" class="wysiwyg-mention" data-value="${entity.data.value}">${text}</a>`;
-  }
   if (entity.type === 'LINK') {
-    return `<a href="${entity.data.url}">${entity.data.text}</a>`;
+    return `<a href="${entity.data.url}">${entity.data.title}</a>`;
   }
   if (entity.type === 'IMAGE') {
     return `<img src="${entity.data.src}" style="float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
@@ -370,22 +428,27 @@ function getInlineStyleSectionMarkup(block: Object, styleSection: Object): strin
   return styleSectionText;
 }
 
-/**
+/*
 * The method returns markup for an entity section.
 * An entity section is a continuous section in a block
 * to which same entity or no entity is applicable.
 */
-function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection: Object): string {
-  const entitySectionMarkup = [];
+function getSectionMarkup(block: Object, entityMap: Object, section: Object): string {
+  const entityInlineMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
-    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], entitySection.start, entitySection.end
+    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], section.start, section.end
   );
   inlineStyleSections.forEach((styleSection) => {
-    entitySectionMarkup.push(getInlineStyleSectionMarkup(block, styleSection));
+    entityInlineMarkup.push(getInlineStyleSectionMarkup(block, styleSection));
   });
-  let sectionText = entitySectionMarkup.join('');
-  if (entitySection.entityKey !== undefined && entitySection.entityKey !== null) {
-    sectionText = getEntityMarkup(entityMap, entitySection.entityKey, sectionText);
+  let sectionText = entityInlineMarkup.join('');
+  if (section.type === 'ENTITY') {
+    if (section.entityKey !== undefined && section.entityKey !== null) {
+      sectionText = getEntityMarkup(entityMap, section.entityKey, sectionText);
+    }
+  } else if (section.type === 'MENTION') {
+    const { mention } = section;
+    sectionText = `<a href="${mention.url || mention.text}" class="rdw-mention">${sectionText}</a>`;
   }
   return sectionText;
 }
@@ -394,15 +457,19 @@ function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection:
 * Function will return the markup for block preserving the inline styles and
 * special characters like newlines or blank spaces.
 */
-export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
+export function getBlockInnerMarkup(
+  block: Object,
+  entityMap: Object,
+  mentionConfig:Object
+): string {
   const blockMarkup = [];
-  const entitySections = getEntitySections(block.entityRanges, block.text.length);
-  entitySections.forEach((section, index) => {
-    let sectionText = getEntitySectionMarkup(block, entityMap, section);
+  const sections = getSections(block, mentionConfig);
+  sections.forEach((section, index) => {
+    let sectionText = getSectionMarkup(block, entityMap, section);
     if (index === 0) {
       sectionText = trimLeadingZeros(sectionText);
     }
-    if (index === entitySections.length - 1) {
+    if (index === sections.length - 1) {
       sectionText = trimTrailingZeros(sectionText);
     }
     blockMarkup.push(sectionText);
@@ -413,7 +480,12 @@ export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
 /**
 * Function will return html for the block.
 */
-export function getBlockMarkup(block: Object, entityMap: Object, directional: boolean): string {
+export function getBlockMarkup(
+  block: Object,
+  entityMap: Object,
+  mentionConfig:Object,
+  directional: boolean
+): string {
   const blockHtml = [];
   if (isAtomicEntityBlock(block)) {
     blockHtml.push(getEntityMarkup(entityMap, block.entityRanges[0].key));
@@ -429,7 +501,7 @@ export function getBlockMarkup(block: Object, entityMap: Object, directional: bo
         blockHtml.push(' dir = "auto"');
       }
       blockHtml.push('>');
-      blockHtml.push(getBlockInnerMarkup(block, entityMap));
+      blockHtml.push(getBlockInnerMarkup(block, entityMap, mentionConfig));
       blockHtml.push(`</${blockTag}>`);
     }
   }
