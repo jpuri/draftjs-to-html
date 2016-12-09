@@ -240,7 +240,7 @@ export function addStylePropertyMarkup(styleSection: Object): string {
       styleString += `background-color: ${styles.BGCOLOR};`;
     }
     if (styles.FONTSIZE) {
-      styleString += `font-size: ${styles.FONTSIZE};`;
+      styleString += `font-size: ${styles.FONTSIZE}px;`;
     }
     if (styles.FONTFAMILY) {
       styleString += `font-family: ${styles.FONTFAMILY};`;
