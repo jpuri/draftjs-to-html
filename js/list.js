@@ -29,9 +29,7 @@ export function getListMarkup(listBlocks: Array<Object>, entityMap: Object): str
       listHtml.push(`<${getBlockTag(block.type)}>\n`);
     } else if (previousBlock.depth === block.depth) {
       if (nestedListBlock && nestedListBlock.length > 0) {
-        listHtml.push('<li>\n');
         listHtml.push(getListMarkup(nestedListBlock));
-        listHtml.push('</li>\n');
         nestedListBlock = [];
       }
     } else {
@@ -46,9 +44,7 @@ export function getListMarkup(listBlocks: Array<Object>, entityMap: Object): str
     }
   });
   if (nestedListBlock && nestedListBlock.length > 0) {
-    listHtml.push('<li>');
     listHtml.push(getListMarkup(nestedListBlock));
-    listHtml.push('</li>\n');
   }
   listHtml.push(`</${getBlockTag(previousBlock.type)}>\n`);
   return listHtml.join('');
