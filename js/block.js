@@ -48,7 +48,7 @@ function getEntitySections(entityRanges: Object, blockLength: number): Array<Obj
     if (r.offset > lastOffset) {
       sections.push({
         start: lastOffset,
-        end: r.offset - 1,
+        end: r.offset,
       });
     }
     sections.push({
@@ -257,7 +257,7 @@ export function addStylePropertyMarkup(styleSection: Object): string {
 function getEntityMarkup(entityMap: Object, entityKey: number, text: string): string {
   const entity = entityMap[entityKey];
   if (entity.type === 'MENTION') {
-    return `<a href="${entity.data.url}" class="wysiwyg-mention" data-value="${entity.data.value}">${text}</a>`;
+    return `<a href="${entity.data.url}" class="wysiwyg-mention" data-mention data-value="${entity.data.value}">${text}</a>`;
   }
   if (entity.type === 'LINK') {
     return `<a href="${entity.data.url}">${entity.data.title}</a>`;
