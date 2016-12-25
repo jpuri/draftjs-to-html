@@ -32,7 +32,9 @@ export function getBlockTag(type: string): string {
 export function getBlockStyle(data: Object): string {
   let styles = '';
   forEach(data, (key, value) => {
-    styles += `${key}:${value};`;
+    if (value) {
+      styles += `${key}:${value};`;
+    }
   });
   return styles;
 }

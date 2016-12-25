@@ -1,5 +1,6 @@
 import {
   getBlockTag,
+  getBlockStyle,
   getBlockInnerMarkup,
 } from './block';
 
@@ -37,7 +38,12 @@ export function getListMarkup(listBlocks: Array<Object>, entityMap: Object): str
       nestedListBlock.push(block);
     }
     if (!nestedBlock) {
-      listHtml.push('<li>');
+      listHtml.push('<li');
+      const blockStyle = getBlockStyle(block.data);
+      if (blockStyle) {
+        listHtml.push(` style="${blockStyle}"`);
+      }
+      listHtml.push('>');
       listHtml.push(getBlockInnerMarkup(block, entityMap));
       listHtml.push('</li>\n');
       previousBlock = block;
