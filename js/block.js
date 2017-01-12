@@ -168,7 +168,7 @@ export function getStylesAtOffset(inlineStyles: Object, offset: number): Object 
 export function sameStyleAsPrevious(
   inlineStyles: Object,
   styles: Array<string>,
-  index: number
+  index: number,
 ): boolean {
   let sameStyled = true;
   if (index > 0 && index < inlineStyles.length) {
@@ -281,7 +281,7 @@ function getInlineStyleSections(
   block: Object,
   styles: Array<string>,
   start: number,
-  end: number
+  end: number,
 ): Array<Object> {
   const styleSections = [];
   const { text } = block;
@@ -361,7 +361,7 @@ like color, background-color, font-size are applicable.
 */
 function getInlineStyleSectionMarkup(block: Object, styleSection: Object): string {
   const stylePropertySections = getInlineStyleSections(
-    block, ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY'], styleSection.start, styleSection.end
+    block, ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY'], styleSection.start, styleSection.end,
   );
   let styleSectionText = '';
   stylePropertySections.forEach((stylePropertySection) => {
@@ -380,7 +380,7 @@ function getInlineStyleSectionMarkup(block: Object, styleSection: Object): strin
 function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection: Object): string {
   const entitySectionMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
-    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], entitySection.start, entitySection.end
+    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], entitySection.start, entitySection.end,
   );
   inlineStyleSections.forEach((styleSection) => {
     entitySectionMarkup.push(getInlineStyleSectionMarkup(block, styleSection));
