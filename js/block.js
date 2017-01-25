@@ -207,6 +207,7 @@ export function addInlineStyleMarkup(style: string, content: string): string {
 * The function returns text for given section of block after doing required character replacements.
 */
 function getSectionText(text: Array<string>): string {
+
   if (text && text.length > 0) {
     const chars = text.map((ch) => {
       switch (ch) {
@@ -257,15 +258,16 @@ export function addStylePropertyMarkup(styleSection: Object): string {
 * Function will return markup for Entity.
 */
 function getEntityMarkup(entityMap: Object, entityKey: number, text: string): string {
+
   const entity = entityMap[entityKey];
   if (entity.type === 'MENTION') {
     return `<a href="${entity.data.url}" class="wysiwyg-mention" data-mention data-value="${entity.data.value}">${text}</a>`;
   }
   if (entity.type === 'LINK') {
-    return `<a href="${entity.data.url}">${entity.data.title}</a>`;
+    return `<a href="${entity.data.url}" target="${entity.data.target}">${entity.data.title}</a>`;
   }
   if (entity.type === 'IMAGE') {
-    return `<img src="${entity.data.src}" style="float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
+    return `<a href="${entity.data.src}" target="_blank"><img src="${entity.data.src}" style="float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/></a>`;
   }
   if (entity.type === 'EMBEDDED_LINK') {
     return `<iframe width="${entity.data.width}" height="${entity.data.height}" src="${entity.data.src}" frameBorder="0" allowFullScreen />`;
@@ -378,6 +380,7 @@ function getInlineStyleSectionMarkup(block: Object, styleSection: Object): strin
 * to which same entity or no entity is applicable.
 */
 function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection: Object): string {
+
   const entitySectionMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
     block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], entitySection.start, entitySection.end,
@@ -409,6 +412,7 @@ export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
     }
     blockMarkup.push(sectionText);
   });
+
   return blockMarkup.join('');
 }
 
@@ -420,8 +424,10 @@ export function getBlockMarkup(block: Object, entityMap: Object, directional: bo
   if (isAtomicEntityBlock(block)) {
     blockHtml.push(getEntityMarkup(entityMap, block.entityRanges[0].key));
   } else {
+
     const blockTag = getBlockTag(block.type);
-    if (blockTag) {
+
+    if (blockTag && block.text) {
       blockHtml.push(`<${blockTag}`);
       const blockStyle = getBlockStyle(block.data);
       if (blockStyle) {
@@ -433,6 +439,8 @@ export function getBlockMarkup(block: Object, entityMap: Object, directional: bo
       blockHtml.push('>');
       blockHtml.push(getBlockInnerMarkup(block, entityMap));
       blockHtml.push(`</${blockTag}>`);
+    } else {
+      blockHtml.push('<br/>')
     }
   }
   blockHtml.push('\n');

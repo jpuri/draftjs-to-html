@@ -7,6 +7,7 @@ import { isList, getListMarkup } from './list';
 * The funciton will generate html markup for given draftjs editorContent.
 */
 export default function draftToHtml(editorContent: Object, directional: boolean): string {
+
   const html = [];
   if (editorContent) {
     const { blocks, entityMap } = editorContent;
