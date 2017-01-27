@@ -262,7 +262,7 @@ function getEntityMarkup(entityMap: Object, entityKey: number, text: string): st
     return `<a href="${entity.data.url}" class="wysiwyg-mention" data-mention data-value="${entity.data.value}">${text}</a>`;
   }
   if (entity.type === 'LINK') {
-    return `<a href="${entity.data.url}">${entity.data.title}</a>`;
+    return `<a href="${entity.data.url}">${text}</a>`;
   }
   if (entity.type === 'IMAGE') {
     return `<img src="${entity.data.src}" style="float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
