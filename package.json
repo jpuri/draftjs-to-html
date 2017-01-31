@@ -1,6 +1,6 @@
 {
   "name": "@shoflo/draftjs-to-html",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "A library for draftjs to html conversion.",
   "main": "lib/draftjs-to-html.js",
   "devDependencies": {
@@ -38,8 +38,10 @@
   },
   "scripts": {
     "clean": "rimraf lib",
+    "build:webpack:windows": "set NODE_ENV=production && webpack --config config/webpack.prod.config.js",
     "build:webpack": "NODE_ENV=production webpack --config config/webpack.prod.config.js",
     "build": "npm run clean && npm run build:webpack",
+    "build:windows": "npm run clean && npm run build:webpack:windows",
     "test": "mocha --compilers js:config/test-compiler.js config/test-setup.js js/**/*Test.js",
     "lint": "eslint js",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",

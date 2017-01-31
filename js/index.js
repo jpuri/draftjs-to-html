@@ -6,8 +6,7 @@ import { isList, getListMarkup } from './list';
 /**
 * The funciton will generate html markup for given draftjs editorContent.
 */
-export default function draftToHtml(editorContent: Object, directional: boolean): string {
-
+export default function draftToHtml(editorContent: Object, directional: boolean, customColors: Object): string {
   const html = [];
   if (editorContent) {
     const { blocks, entityMap } = editorContent;
@@ -22,7 +21,7 @@ export default function draftToHtml(editorContent: Object, directional: boolean)
             html.push(listHtml);
             listBlocks = [];
           }
-          const blockHtml = getBlockMarkup(block, entityMap, directional);
+          const blockHtml = getBlockMarkup(block, entityMap, directional, customColors);
           html.push(blockHtml);
         }
       });
