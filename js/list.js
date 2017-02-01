@@ -17,7 +17,7 @@ export function isList(blockType: string): any {
 /**
 * Function will return html markup for a list block.
 */
-export function getListMarkup(listBlocks: Array<Object>, entityMap: Object): string {
+export function getListMarkup(listBlocks: Array<Object>, entityMap: Object, customColors: Object): string {
   const listHtml = [];
   let nestedListBlock = [];
   let previousBlock;
@@ -44,7 +44,7 @@ export function getListMarkup(listBlocks: Array<Object>, entityMap: Object): str
         listHtml.push(` style="${blockStyle}"`);
       }
       listHtml.push('>');
-      listHtml.push(getBlockInnerMarkup(block, entityMap));
+      listHtml.push(getBlockInnerMarkup(block, entityMap, customColors));
       listHtml.push('</li>\n');
       previousBlock = block;
     }
