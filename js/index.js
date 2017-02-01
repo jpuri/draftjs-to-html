@@ -17,7 +17,7 @@ export default function draftToHtml(editorContent: Object, directional: boolean,
           listBlocks.push(block);
         } else {
           if (listBlocks.length > 0) {
-            const listHtml = getListMarkup(listBlocks, entityMap);
+            const listHtml = getListMarkup(listBlocks, entityMap, customColors);
             html.push(listHtml);
             listBlocks = [];
           }
@@ -26,7 +26,7 @@ export default function draftToHtml(editorContent: Object, directional: boolean,
         }
       });
       if (listBlocks.length > 0) {
-        const listHtml = getListMarkup(listBlocks, entityMap);
+        const listHtml = getListMarkup(listBlocks, entityMap, customColors);
         html.push(listHtml);
         listBlocks = [];
       }
