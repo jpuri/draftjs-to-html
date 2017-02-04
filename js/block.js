@@ -1,7 +1,4 @@
-import {
-  forEach,
-  isEmptyString,
-} from './common';
+import { forEach, isEmptyString } from './common';
 
 /**
 * Mapping block-type to corresponding html tag.
@@ -262,7 +259,8 @@ function getEntityMarkup(entityMap: Object, entityKey: number, text: string): st
     return `<a href="${entity.data.url}" class="wysiwyg-mention" data-mention data-value="${entity.data.value}">${text}</a>`;
   }
   if (entity.type === 'LINK') {
-    return `<a href="${entity.data.url}">${text}</a>`;
+    const target = entity.data.target || '_self';
+    return `<a href="${entity.data.url}" target="${target}" >${text}</a>`;
   }
   if (entity.type === 'IMAGE') {
     return `<img src="${entity.data.src}" style="float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
@@ -367,8 +365,7 @@ function getInlineStyleSectionMarkup(block: Object, styleSection: Object): strin
   stylePropertySections.forEach((stylePropertySection) => {
     styleSectionText += addStylePropertyMarkup(stylePropertySection);
   });
-  styleSectionText =
-    getStyleTagSectionMarkup(styleSection.styles, styleSectionText);
+  styleSectionText = getStyleTagSectionMarkup(styleSection.styles, styleSectionText);
   return styleSectionText;
 }
 
