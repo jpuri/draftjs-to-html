@@ -17,7 +17,8 @@ export function isList(blockType: string): any {
 /**
 * Function will return html markup for a list block.
 */
-export function getListMarkup(listBlocks: Array<Object>, entityMap: Object): string {
+export function getListMarkup(listBlocks: Array<Object>, entityMap: Object,
+  customEntityMarkupTransform: Function): string {
   const listHtml = [];
   let nestedListBlock = [];
   let previousBlock;
@@ -30,7 +31,7 @@ export function getListMarkup(listBlocks: Array<Object>, entityMap: Object): str
       listHtml.push(`<${getBlockTag(block.type)}>\n`);
     } else if (previousBlock.depth === block.depth) {
       if (nestedListBlock && nestedListBlock.length > 0) {
-        listHtml.push(getListMarkup(nestedListBlock));
+        listHtml.push(getListMarkup(nestedListBlock, undefined, customEntityMarkupTransform));
         nestedListBlock = [];
       }
     } else {
@@ -44,13 +45,13 @@ export function getListMarkup(listBlocks: Array<Object>, entityMap: Object): str
         listHtml.push(` style="${blockStyle}"`);
       }
       listHtml.push('>');
-      listHtml.push(getBlockInnerMarkup(block, entityMap));
+      listHtml.push(getBlockInnerMarkup(block, entityMap, customEntityMarkupTransform));
       listHtml.push('</li>\n');
       previousBlock = block;
     }
   });
   if (nestedListBlock && nestedListBlock.length > 0) {
-    listHtml.push(getListMarkup(nestedListBlock));
+    listHtml.push(getListMarkup(nestedListBlock, undefined, customEntityMarkupTransform));
   }
   listHtml.push(`</${getBlockTag(previousBlock.type)}>\n`);
   return listHtml.join('');
