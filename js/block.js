@@ -1,7 +1,4 @@
-import {
-  forEach,
-  isEmptyString,
-} from './common';
+import { forEach, isEmptyString } from './common';
 
 /**
 * Mapping block-type to corresponding html tag.
@@ -73,7 +70,8 @@ function getEntitySections(entityRanges: Object, blockLength: number): Array<Obj
 * Function to check if the block is an atomic entity block.
 */
 function isAtomicEntityBlock(block: Object): boolean {
-  if (block.entityRanges.length > 0 && isEmptyString(block.text)) {
+  if ((block.entityRanges.length > 0 && isEmptyString(block.text)) ||
+    block.type === 'atomic') {
     return true;
   }
   return false;
@@ -256,13 +254,25 @@ export function addStylePropertyMarkup(styleSection: Object): string {
 /**
 * Function will return markup for Entity.
 */
-function getEntityMarkup(entityMap: Object, entityKey: number, text: string): string {
+function getEntityMarkup(
+  entityMap: Object,
+  entityKey: number,
+  text: string,
+  customEntityTransform: Function
+): string {
   const entity = entityMap[entityKey];
+  if (typeof customEntityTransform === 'function') {
+    const html = customEntityTransform(entity, text);
+    if (html) {
+      return html;
+    }
+  }
   if (entity.type === 'MENTION') {
     return `<a href="${entity.data.url}" class="wysiwyg-mention" data-mention data-value="${entity.data.value}">${text}</a>`;
   }
   if (entity.type === 'LINK') {
-    return `<a href="${entity.data.url}">${text}</a>`;
+    const target = entity.data.target || '_self';
+    return `<a href="${entity.data.url}" target="${target}" >${text}</a>`;
   }
   if (entity.type === 'IMAGE') {
     return `<img src="${entity.data.src}" style="float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
@@ -367,8 +377,7 @@ function getInlineStyleSectionMarkup(block: Object, styleSection: Object): strin
   stylePropertySections.forEach((stylePropertySection) => {
     styleSectionText += addStylePropertyMarkup(stylePropertySection);
   });
-  styleSectionText =
-    getStyleTagSectionMarkup(styleSection.styles, styleSectionText);
+  styleSectionText = getStyleTagSectionMarkup(styleSection.styles, styleSectionText);
   return styleSectionText;
 }
 
@@ -377,7 +386,8 @@ function getInlineStyleSectionMarkup(block: Object, styleSection: Object): strin
 * An entity section is a continuous section in a block
 * to which same entity or no entity is applicable.
 */
-function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection: Object): string {
+function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection: Object,
+  customEntityTransform: Function): string {
   const entitySectionMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
     block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], entitySection.start, entitySection.end,
@@ -387,7 +397,8 @@ function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection:
   });
   let sectionText = entitySectionMarkup.join('');
   if (entitySection.entityKey !== undefined && entitySection.entityKey !== null) {
-    sectionText = getEntityMarkup(entityMap, entitySection.entityKey, sectionText);
+    sectionText =
+      getEntityMarkup(entityMap, entitySection.entityKey, sectionText, customEntityTransform);
   }
   return sectionText;
 }
@@ -396,11 +407,16 @@ function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection:
 * Function will return the markup for block preserving the inline styles and
 * special characters like newlines or blank spaces.
 */
-export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
+export function getBlockInnerMarkup(
+  block: Object,
+  entityMap: Object,
+  customEntityTransform: Function
+): string {
   const blockMarkup = [];
   const entitySections = getEntitySections(block.entityRanges, block.text.length);
   entitySections.forEach((section, index) => {
-    let sectionText = getEntitySectionMarkup(block, entityMap, section);
+    let sectionText =
+      getEntitySectionMarkup(block, entityMap, section, customEntityTransform);
     if (index === 0) {
       sectionText = trimLeadingZeros(sectionText);
     }
@@ -415,10 +431,21 @@ export function getBlockInnerMarkup(block: Object, entityMap: Object): string {
 /**
 * Function will return html for the block.
 */
-export function getBlockMarkup(block: Object, entityMap: Object, directional: boolean): string {
+export function getBlockMarkup(
+  block: Object,
+  entityMap: Object,
+  directional: boolean,
+  customEntityTransform: Function
+): string {
   const blockHtml = [];
   if (isAtomicEntityBlock(block)) {
-    blockHtml.push(getEntityMarkup(entityMap, block.entityRanges[0].key));
+    blockHtml.push(
+      getEntityMarkup(
+        entityMap,
+        block.entityRanges[0].key,
+        undefined,
+        customEntityTransform
+      ));
   } else {
     const blockTag = getBlockTag(block.type);
     if (blockTag) {
@@ -431,7 +458,7 @@ export function getBlockMarkup(block: Object, entityMap: Object, directional: bo
         blockHtml.push(' dir = "auto"');
       }
       blockHtml.push('>');
-      blockHtml.push(getBlockInnerMarkup(block, entityMap));
+      blockHtml.push(getBlockInnerMarkup(block, entityMap, customEntityTransform));
       blockHtml.push(`</${blockTag}>`);
     }
   }
