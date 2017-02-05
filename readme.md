@@ -14,7 +14,7 @@ This is draft to HTML library I wrote for one of my projects. I am open-sourcing
 import draftToHtml from 'draftjs-to-html';
 
 const rawContentState = convertToRaw(editorState.getCurrentContent());
-const markup = draftToHtml(contentState, directional);
+const markup = draftToHtml(contentState, directional, customEntityTransform);
 ```
 
 ## Supported conversions
@@ -56,9 +56,11 @@ Following is the list of conversions it supports:
 
 8. Converts embedded links to iFrames.
 
-9. Adding style property to block tag for block level styles like text-align: `<p style="text-align: right">text</p>`.
+9. `customEntityTransform` can be used for transformation of a custom entity block to html.
 
-10. RTL, if directional function parameter is true, generated blocks have property `dir = "auto"` thus they get aligned according to bidi algorithm.
+10. Adding style property to block tag for block level styles like text-align: `<p style="text-align: right">text</p>`.
+
+11. RTL, if directional function parameter is true, generated blocks have property `dir = "auto"` thus they get aligned according to bidi algorithm.
 
 ## License
 MIT.
