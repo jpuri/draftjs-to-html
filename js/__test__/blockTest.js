@@ -147,7 +147,7 @@ describe('addStylePropertyMarkup test suite', () => {
   });
   assert.equal(
     markup,
-    '<span style="color: red;background-color: pink;font-size: 10;font-family: Arial;">test</span>'
+    '<span style="color: red;background-color: pink;font-size: 10px;font-family: Arial;">test</span>',
   );
   markup = addStylePropertyMarkup({ styles: { COLOR: 'red' }, text: ['t', 'e', 's', 't'] });
   assert.equal(markup, '<span style="color: red;">test</span>');

@@ -1,5 +1,6 @@
 import {
   getBlockTag,
+  getBlockStyle,
   getBlockInnerMarkup,
 } from './block';
 
@@ -19,8 +20,9 @@ export function isList(blockType: string): any {
 export function getListMarkup(
   listBlocks: Array<Object>,
   entityMap: Object,
-  mentionConfig: Object,
+  hashtagConfig: Object,
   directional: boolean
+  customEntityTransform: Function
 ): string {
   const listHtml = [];
   let nestedListBlock = [];
@@ -34,9 +36,13 @@ export function getListMarkup(
       listHtml.push(`<${getBlockTag(block.type)}>\n`);
     } else if (previousBlock.depth === block.depth) {
       if (nestedListBlock && nestedListBlock.length > 0) {
-        listHtml.push('<li>\n');
-        listHtml.push(getListMarkup(nestedListBlock, entityMap, mentionConfig, directional));
-        listHtml.push('</li>\n');
+        listHtml.push(getListMarkup(
+          nestedListBlock,
+          entityMap,
+          hashtagConfig,
+          directional,
+          customEntityTransform
+        ));
         nestedListBlock = [];
       }
     } else {
@@ -44,16 +50,33 @@ export function getListMarkup(
       nestedListBlock.push(block);
     }
     if (!nestedBlock) {
-      listHtml.push('<li>');
-      listHtml.push(getBlockInnerMarkup(block, entityMap, mentionConfig, directional));
+      listHtml.push('<li');
+      const blockStyle = getBlockStyle(block.data);
+      if (blockStyle) {
+        listHtml.push(` style="${blockStyle}"`);
+      }
+      if (directional) {
+        blockHtml.push(' dir = "auto"');
+      }
+      listHtml.push('>');
+      listHtml.push(getBlockInnerMarkup(
+        block,
+        entityMap,
+        hashtagConfig,
+        customEntityTransform
+      ));
       listHtml.push('</li>\n');
       previousBlock = block;
     }
   });
   if (nestedListBlock && nestedListBlock.length > 0) {
-    listHtml.push('<li>');
-    listHtml.push(getListMarkup(nestedListBlock, entityMap, mentionConfig, directional));
-    listHtml.push('</li>\n');
+    listHtml.push(getListMarkup(
+      nestedListBlock,
+      entityMap,
+      hashtagConfig,
+      directional,
+      customEntityTransform
+    ));
   }
   listHtml.push(`</${getBlockTag(previousBlock.type)}>\n`);
   return listHtml.join('');

@@ -1,16 +1,16 @@
 /* @flow */
 
-import { ContentState } from 'draft-js';
 import { getBlockMarkup } from './block';
 import { isList, getListMarkup } from './list';
 
 /**
-* The funciton will generate html markup for given draftjs editorContent.
+* The function will generate html markup for given draftjs editorContent.
 */
 export default function draftToHtml(
   editorContent: ContentState,
-  mentionConfig:Object,
+  hashtagConfig:Object,
   directional: boolean
+  customEntityTransform: Function
 ): string {
   const html = [];
   if (editorContent) {
@@ -22,16 +22,22 @@ export default function draftToHtml(
           listBlocks.push(block);
         } else {
           if (listBlocks.length > 0) {
-            const listHtml = getListMarkup(listBlocks, entityMap, mentionConfig, directional);
+            const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, customEntityTransform);
             html.push(listHtml);
             listBlocks = [];
           }
-          const blockHtml = getBlockMarkup(block, entityMap, mentionConfig, directional);
+          const blockHtml = getBlockMarkup(
+            block,
+            entityMap,
+            hashtagConfig,
+            directional,
+            customEntityTransform
+          );
           html.push(blockHtml);
         }
       });
       if (listBlocks.length > 0) {
-        const listHtml = getListMarkup(listBlocks, entityMap, mentionConfig, directional);
+        const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, customEntityTransform);
         html.push(listHtml);
         listBlocks = [];
       }
