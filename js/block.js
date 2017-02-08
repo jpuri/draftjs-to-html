@@ -61,13 +61,11 @@ function getHashtagRanges(blockText: string, hashtagConfig: Object): Array<Objec
         }
       }
       if (startIndex >= 0) {
-        console.log('into if', startIndex, text, blockText, blockText.indexOf(separator));
         const endIndex =
           text.indexOf(separator) >= 0
           ? text.indexOf(separator)
           : text.length;
         const hashtag = text.substr(0, endIndex);
-        console.log('hashtag', hashtag);
         if (hashtag && hashtag.length > 0) {
           sections.push({
             offset: counter,
