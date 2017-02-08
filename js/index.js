@@ -4,10 +4,11 @@ import { getBlockMarkup } from './block';
 import { isList, getListMarkup } from './list';
 
 /**
-* The funciton will generate html markup for given draftjs editorContent.
+* The function will generate html markup for given draftjs editorContent.
 */
 export default function draftToHtml(
-  editorContent: Object,
+  editorContent: ContentState,
+  hashtagConfig:Object,
   directional: boolean,
   customEntityTransform: Function
 ): string {
@@ -21,21 +22,22 @@ export default function draftToHtml(
           listBlocks.push(block);
         } else {
           if (listBlocks.length > 0) {
-            const listHtml = getListMarkup(listBlocks, entityMap, customEntityTransform);
+            const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, customEntityTransform);
             html.push(listHtml);
             listBlocks = [];
           }
           const blockHtml = getBlockMarkup(
             block,
             entityMap,
+            {},
             directional,
-            customEntityTransform
+            customEntityTransform,
           );
           html.push(blockHtml);
         }
       });
       if (listBlocks.length > 0) {
-        const listHtml = getListMarkup(listBlocks, entityMap, customEntityTransform);
+        const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, customEntityTransform);
         html.push(listHtml);
         listBlocks = [];
       }
