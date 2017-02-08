@@ -21,7 +21,7 @@ export function getListMarkup(
   listBlocks: Array<Object>,
   entityMap: Object,
   hashtagConfig: Object,
-  directional: boolean
+  directional: boolean,
   customEntityTransform: Function
 ): string {
   const listHtml = [];

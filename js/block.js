@@ -43,38 +43,39 @@ export function getBlockStyle(data: Object): string {
 function getHashtagRanges(blockText: string, hashtagConfig: Object): Array<Object> {
   const sections = [];
   if (hashtagConfig) {
-    let text = blockText;
-    let startIndex = 0;
     let counter = 0;
+    let startIndex = 0;
+    let text = blockText;
+    const trigger = hashtagConfig.trigger || '#';
+    const separator = hashtagConfig.separator || ' ';
     for (;text.length > 0 && startIndex >= 0;) {
-      if (text[0] === hashtagConfig.trigger) {
+      if (text[0] === trigger) {
         startIndex = 0;
         counter = 0;
-        text = text.substr(hashtagConfig.trigger.length);
+        text = text.substr(trigger.length);
       } else {
-        startIndex = text.indexOf(hashtagConfig.separator + hashtagConfig.trigger);
+        startIndex = text.indexOf(separator + trigger);
         if (startIndex >= 0) {
-          text = text.substr(startIndex + (hashtagConfig.separator + hashtagConfig.trigger).length);
-          counter += startIndex + hashtagConfig.separator.length;
+          text = text.substr(startIndex + (separator + trigger).length);
+          counter += startIndex + separator.length;
         }
       }
       if (startIndex >= 0) {
+        console.log('into if', startIndex, text, blockText, blockText.indexOf(separator));
         const endIndex =
-          blockText.indexOf(hashtagConfig.separator) >= 0
-          ? text.indexOf(hashtagConfig.separator)
+          text.indexOf(separator) >= 0
+          ? text.indexOf(separator)
           : text.length;
         const hashtag = text.substr(0, endIndex);
-        const hashtagPresent =
-          hashtagConfig.suggestions.filter(suggestion => suggestion.value === hashtag);
-        if (hashtagPresent && hashtagPresent.length > 0) {
+        console.log('hashtag', hashtag);
+        if (hashtag && hashtag.length > 0) {
           sections.push({
             offset: counter,
-            length: hashtag.length + hashtagConfig.trigger.length,
-            hashtag: hashtagPresent[0],
+            length: hashtag.length + trigger.length,
             type: 'HASHTAG',
           });
         }
-        counter += hashtagConfig.trigger.length;
+        counter += trigger.length;
       }
     }
   }
@@ -114,7 +115,6 @@ function getSections(
       end: r.offset + r.length,
       entityKey: r.key,
       type: r.type,
-      hashtag: r.hashtag,
     });
     lastOffset = r.offset + r.length;
   });
@@ -328,9 +328,6 @@ function getEntityMarkup(
       return html;
     }
   }
-  if (entity.type === 'HASHTAG') {
-    return `<a href="${text}" class="wysiwyg-hashtag" data-mention data-value="${text}">${text}</a>`;
-  }
   if (entity.type === 'MENTION') {
     return `<a href="${entity.data.url}" class="wysiwyg-mention" data-mention data-value="${entity.data.value}">${text}</a>`;
   }
@@ -450,37 +447,29 @@ function getInlineStyleSectionMarkup(block: Object, styleSection: Object): strin
 * An entity section is a continuous section in a block
 * to which same entity or no entity is applicable.
 */
-<<<<<<< HEAD
-function getSectionMarkup(block: Object, entityMap: Object, section: Object): string {
+function getSectionMarkup(
+  block: Object,
+  entityMap: Object,
+  section: Object,
+  customEntityTransform: Function
+  ): string {
   const entityInlineMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
-    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], section.start, section.end
-=======
-function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection: Object,
-  customEntityTransform: Function): string {
-  const entitySectionMarkup = [];
-  const inlineStyleSections = getInlineStyleSections(
-    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], entitySection.start, entitySection.end,
->>>>>>> master
+    block,
+    ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'],
+    section.start,
+    section.end,
   );
   inlineStyleSections.forEach((styleSection) => {
     entityInlineMarkup.push(getInlineStyleSectionMarkup(block, styleSection));
   });
-<<<<<<< HEAD
   let sectionText = entityInlineMarkup.join('');
   if (section.type === 'ENTITY') {
     if (section.entityKey !== undefined && section.entityKey !== null) {
-      sectionText = getEntityMarkup(entityMap, section.entityKey, sectionText);
+      sectionText = getEntityMarkup(entityMap, section.entityKey, sectionText, customEntityTransform);
     }
-  } else if (section.type === 'MENTION') {
-    const { mention } = section;
-    sectionText = `<a href="${mention.url || mention.text}" class="rdw-mention">${sectionText}</a>`;
-=======
-  let sectionText = entitySectionMarkup.join('');
-  if (entitySection.entityKey !== undefined && entitySection.entityKey !== null) {
-    sectionText =
-      getEntityMarkup(entityMap, entitySection.entityKey, sectionText, customEntityTransform);
->>>>>>> master
+  } else if (section.type === 'HASHTAG') {
+    sectionText = `<a href="${sectionText}" class="rdw-hashtag">${sectionText}</a>`;
   }
   return sectionText;
 }
@@ -492,14 +481,14 @@ function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection:
 export function getBlockInnerMarkup(
   block: Object,
   entityMap: Object,
-  hashtagConfig:Object,
+  hashtagConfig: Object,
   customEntityTransform: Function
 ): string {
   const blockMarkup = [];
-  const entitySections = getEntitySections(block.entityRanges, block.text.length);
-  entitySections.forEach((section, index) => {
+  const sections = getSections(block, hashtagConfig);
+  sections.forEach((section, index) => {
     let sectionText =
-      getEntitySectionMarkup(block, entityMap, section, customEntityTransform);
+      getSectionMarkup(block, entityMap, section, customEntityTransform);
     if (index === 0) {
       sectionText = trimLeadingZeros(sectionText);
     }
@@ -517,8 +506,8 @@ export function getBlockInnerMarkup(
 export function getBlockMarkup(
   block: Object,
   entityMap: Object,
-  hashtagConfig:Object,
-  directional: boolean
+  hashtagConfig: Object,
+  directional: boolean,
   customEntityTransform: Function
 ): string {
   const blockHtml = [];
@@ -528,7 +517,7 @@ export function getBlockMarkup(
         entityMap,
         block.entityRanges[0].key,
         undefined,
-        customEntityTransform
+        customEntityTransform,
       ));
   } else {
     const blockTag = getBlockTag(block.type);

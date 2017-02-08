@@ -9,7 +9,7 @@ import { isList, getListMarkup } from './list';
 export default function draftToHtml(
   editorContent: ContentState,
   hashtagConfig:Object,
-  directional: boolean
+  directional: boolean,
   customEntityTransform: Function
 ): string {
   const html = [];
@@ -29,9 +29,9 @@ export default function draftToHtml(
           const blockHtml = getBlockMarkup(
             block,
             entityMap,
-            hashtagConfig,
+            {},
             directional,
-            customEntityTransform
+            customEntityTransform,
           );
           html.push(blockHtml);
         }
