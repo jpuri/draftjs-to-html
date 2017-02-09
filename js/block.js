@@ -160,13 +160,13 @@ function getStyleArrayForBlock(block: Object): Object {
       const offset = range.offset;
       const length = offset + range.length;
       for (let i = offset; i < length; i += 1) {
-        if (range.style.startsWith('color-')) {
+        if (range.style.indexOf('color-') === 0) {
           inlineStyles.COLOR[i] = range.style.substring(6);
-        } else if (range.style.startsWith('bgcolor-')) {
+        } else if (range.style.indexOf('bgcolor-') === 0) {
           inlineStyles.BGCOLOR[i] = range.style.substring(8);
-        } else if (range.style.startsWith('fontsize-')) {
+        } else if (range.style.indexOf('fontsize-') === 0) {
           inlineStyles.FONTSIZE[i] = range.style.substring(9);
-        } else if (range.style.startsWith('fontfamily-')) {
+        } else if (range.style.indexOf('fontfamily-') === 0) {
           inlineStyles.FONTFAMILY[i] = range.style.substring(11);
         } else if (inlineStyles[range.style]) {
           inlineStyles[range.style][i] = true;
@@ -467,7 +467,7 @@ function getSectionMarkup(
       sectionText = getEntityMarkup(entityMap, section.entityKey, sectionText, customEntityTransform);
     }
   } else if (section.type === 'HASHTAG') {
-    sectionText = `<a href="${sectionText}" class="rdw-hashtag">${sectionText}</a>`;
+    sectionText = `<a href="${sectionText}" class="wysiwyg-hashtag">${sectionText}</a>`;
   }
   return sectionText;
 }

@@ -17,7 +17,9 @@ const rawContentState = convertToRaw(editorState.getCurrentContent());
 const markup = draftToHtml(contentState, hashtagConfig, directional, customEntityTransform);
 ```
 The function parameters are:
+
 1. **contentState**: Its instance of  [RawDraftContentState](https://facebook.github.io/draft-js/docs/api-reference-data-conversion.html#content)
+
 2. **hashConfig**: Its configuration object for hashtag, its required only if hashtags are used. If the object is not defined hashtags will be output as simple text in the markdown.
     ```
     hashConfig = {
@@ -28,6 +30,7 @@ The function parameters are:
     Here trigger is character that marks starting of hashtag (default '#') and separator is character that separates characters (default ' ').
 
 3. **directional**: Boolean, if directional is true text is aligned according to bidi algorithm.
+
 4. **customEntityTransform**: Its function to render custom defined entities by user, its also optional.
 
 ## Supported conversions
@@ -63,13 +66,13 @@ Following is the list of conversions it supports:
 
 5. Converts entity range of type link to anchor tag using entity data url for href: `<a href="url">text</a>`.
 
-6. Converts entity range of type mention to anchor tag using entity data url for href and also adds class to it: `<a href="url" class="wysiwyg-mention" />`.
+6. Converts entity range of type mention to anchor tag using entity data url for href and also adds class to it: `<a href="url" class="wysiwyg-mention">text</a>`.
 
 7. Converts atomic entity image to image tag using entity data src for image source: `<img src="src" />`.
 
 8. Converts embedded links to iFrames.
 
-9. Converts hashtags to anchor tag: `<a href="#tag">#tag</a>`.
+9. Converts hashtags to anchor tag: `<a href="#tag" class="wysiwyg-hashtag">#tag</a>`.
 
 9. `customEntityTransform` can be used for transformation of a custom entity block to html.
 
