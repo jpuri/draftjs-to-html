@@ -8,7 +8,7 @@ import { isList, getListMarkup } from './list';
 */
 export default function draftToHtml(
   editorContent: ContentState,
-  hashtagConfig:Object,
+  hashtagConfig: Object,
   directional: boolean,
   customEntityTransform: Function
 ): string {
@@ -29,7 +29,7 @@ export default function draftToHtml(
           const blockHtml = getBlockMarkup(
             block,
             entityMap,
-            {},
+            hashtagConfig,
             directional,
             customEntityTransform,
           );
