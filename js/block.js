@@ -334,7 +334,7 @@ function getEntityMarkup(
     return `<a href="${entity.data.url}" class="wysiwyg-mention" data-mention data-value="${entity.data.value}">${text}</a>`;
   }
   if (entity.type === 'LINK') {
-    const target = entity.data.target || '_self';
+    const target = entity.data.target || '_blank';
     return `<a href="${entity.data.url}" target="${target}" >${text}</a>`;
   }
   if (entity.type === 'IMAGE') {
