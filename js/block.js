@@ -1,7 +1,4 @@
-import {
-  forEach,
-  isEmptyString,
-} from './common';
+import { forEach, isEmptyString } from './common';
 
 /**
 * Mapping block-type to corresponding html tag.
@@ -40,13 +37,71 @@ export function getBlockStyle(data: Object): string {
 }
 
 /**
+* The function returns an array of hashtag-sections in blocks.
+* These will be areas in block which have hashtags applicable to them.
+*/
+function getHashtagRanges(blockText: string, hashtagConfig: Object): Array<Object> {
+  const sections = [];
+  if (hashtagConfig) {
+    let counter = 0;
+    let startIndex = 0;
+    let text = blockText;
+    const trigger = hashtagConfig.trigger || '#';
+    const separator = hashtagConfig.separator || ' ';
+    for (;text.length > 0 && startIndex >= 0;) {
+      if (text[0] === trigger) {
+        startIndex = 0;
+        counter = 0;
+        text = text.substr(trigger.length);
+      } else {
+        startIndex = text.indexOf(separator + trigger);
+        if (startIndex >= 0) {
+          text = text.substr(startIndex + (separator + trigger).length);
+          counter += startIndex + separator.length;
+        }
+      }
+      if (startIndex >= 0) {
+        const endIndex =
+          text.indexOf(separator) >= 0
+          ? text.indexOf(separator)
+          : text.length;
+        const hashtag = text.substr(0, endIndex);
+        if (hashtag && hashtag.length > 0) {
+          sections.push({
+            offset: counter,
+            length: hashtag.length + trigger.length,
+            type: 'HASHTAG',
+          });
+        }
+        counter += trigger.length;
+      }
+    }
+  }
+  return sections;
+}
+
+/**
 * The function returns an array of entity-sections in blocks.
 * These will be areas in block which have same entity or no entity applicable to them.
 */
-function getEntitySections(entityRanges: Object, blockLength: number): Array<Object> {
+function getSections(
+  block: Object,
+  hashtagConfig: Object
+): Array<Object> {
   const sections = [];
   let lastOffset = 0;
-  entityRanges.forEach((r) => {
+  let sectionRanges = block.entityRanges.map((range) => {
+    const { offset, length, key } = range;
+    return {
+      offset,
+      length,
+      key,
+      type: 'ENTITY',
+    };
+  });
+  sectionRanges = sectionRanges.concat(getHashtagRanges(block.text, hashtagConfig));
+  sectionRanges = sectionRanges.sort((s1, s2) => s1.offset - s2.offset);
+  sectionRanges.forEach((r) => {
     if (r.offset > lastOffset) {
       sections.push({
         start: lastOffset,
@@ -57,13 +112,14 @@ function getEntitySections(entityRanges: Object, blockLength: number): Array<Obj
       start: r.offset,
       end: r.offset + r.length,
       entityKey: r.key,
+      type: r.type,
     });
     lastOffset = r.offset + r.length;
   });
-  if (lastOffset < blockLength) {
+  if (lastOffset < block.text.length) {
     sections.push({
       start: lastOffset,
-      end: blockLength,
+      end: block.text.length,
     });
   }
   return sections;
@@ -73,7 +129,8 @@ function getEntitySections(entityRanges: Object, blockLength: number): Array<Obj
 * Function to check if the block is an atomic entity block.
 */
 function isAtomicEntityBlock(block: Object): boolean {
-  if (block.entityRanges.length > 0 && isEmptyString(block.text)) {
+  if ((block.entityRanges.length > 0 && isEmptyString(block.text)) ||
+    block.type === 'atomic') {
     return true;
   }
   return false;
@@ -103,13 +160,13 @@ function getStyleArrayForBlock(block: Object): Object {
       const offset = range.offset;
       const length = offset + range.length;
       for (let i = offset; i < length; i += 1) {
-        if (range.style.startsWith('color-')) {
+        if (range.style.indexOf('color-') === 0) {
           inlineStyles.COLOR[i] = range.style.substring(6);
-        } else if (range.style.startsWith('bgcolor-')) {
+        } else if (range.style.indexOf('bgcolor-') === 0) {
           inlineStyles.BGCOLOR[i] = range.style.substring(8);
-        } else if (range.style.startsWith('fontsize-')) {
+        } else if (range.style.indexOf('fontsize-') === 0) {
           inlineStyles.FONTSIZE[i] = range.style.substring(9);
-        } else if (range.style.startsWith('fontfamily-')) {
+        } else if (range.style.indexOf('fontfamily-') === 0) {
           inlineStyles.FONTFAMILY[i] = range.style.substring(11);
         } else if (inlineStyles[range.style]) {
           inlineStyles[range.style][i] = true;
@@ -260,14 +317,25 @@ export function addStylePropertyMarkup(styleSection: Object, customColors: Objec
 /**
 * Function will return markup for Entity.
 */
-function getEntityMarkup(entityMap: Object, entityKey: number, text: string): string {
-
+function getEntityMarkup(
+  entityMap: Object,
+  entityKey: number,
+  text: string,
+  customEntityTransform: Function
+): string {
   const entity = entityMap[entityKey];
+  if (typeof customEntityTransform === 'function') {
+    const html = customEntityTransform(entity, text);
+    if (html) {
+      return html;
+    }
+  }
   if (entity.type === 'MENTION') {
     return `<a href="${entity.data.url}" class="wysiwyg-mention" data-mention data-value="${entity.data.value}">${text}</a>`;
   }
   if (entity.type === 'LINK') {
-    return `<a href="${entity.data.url}" target="${entity.data.target}">${entity.data.title}</a>`;
+    const target = entity.data.target || '_self';
+    return `<a href="${entity.data.url}" target="${target}" >${text}</a>`;
   }
   if (entity.type === 'IMAGE') {
     return `<a href="${entity.data.src}" target="_blank"><img src="${entity.data.src}" style="float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/></a>`;
@@ -372,28 +440,39 @@ function getInlineStyleSectionMarkup(block: Object, styleSection: Object, custom
   stylePropertySections.forEach((stylePropertySection) => {
     styleSectionText += addStylePropertyMarkup(stylePropertySection, customColors);
   });
-  styleSectionText =
-    getStyleTagSectionMarkup(styleSection.styles, styleSectionText);
+  styleSectionText = getStyleTagSectionMarkup(styleSection.styles, styleSectionText);
   return styleSectionText;
 }
 
-/**
+/*
 * The method returns markup for an entity section.
 * An entity section is a continuous section in a block
 * to which same entity or no entity is applicable.
 */
-function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection: Object, customColors: Object): string {
-
-  const entitySectionMarkup = [];
+function getSectionMarkup(
+  block: Object,
+  entityMap: Object,
+  section: Object,
+  customEntityTransform: Function,
+  customColors: Object
+  ): string {
+  const entityInlineMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
-    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], entitySection.start, entitySection.end,
+    block,
+    ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'],
+    section.start,
+    section.end,
   );
   inlineStyleSections.forEach((styleSection) => {
-    entitySectionMarkup.push(getInlineStyleSectionMarkup(block, styleSection, customColors));
+    entityInlineMarkup.push(getInlineStyleSectionMarkup(block, styleSection, customColors));
   });
-  let sectionText = entitySectionMarkup.join('');
-  if (entitySection.entityKey !== undefined && entitySection.entityKey !== null) {
-    sectionText = getEntityMarkup(entityMap, entitySection.entityKey, sectionText);
+  let sectionText = entityInlineMarkup.join('');
+  if (section.type === 'ENTITY') {
+    if (section.entityKey !== undefined && section.entityKey !== null) {
+      sectionText = getEntityMarkup(entityMap, section.entityKey, sectionText, customEntityTransform);
+    }
+  } else if (section.type === 'HASHTAG') {
+    sectionText = `<a href="${sectionText}" class="wysiwyg-hashtag">${sectionText}</a>`;
   }
   return sectionText;
 }
@@ -402,15 +481,22 @@ function getEntitySectionMarkup(block: Object, entityMap: Object, entitySection:
 * Function will return the markup for block preserving the inline styles and
 * special characters like newlines or blank spaces.
 */
-export function getBlockInnerMarkup(block: Object, entityMap: Object, customColors: Object): string {
+
+export function getBlockInnerMarkup(
+  block: Object,
+  entityMap: Object,
+  hashtagConfig: Object,
+  customEntityTransform: Function,
+  customColors: Object
+): string {
   const blockMarkup = [];
-  const entitySections = getEntitySections(block.entityRanges, block.text.length);
-  entitySections.forEach((section, index) => {
-    let sectionText = getEntitySectionMarkup(block, entityMap, section, customColors);
+  const sections = getSections(block, hashtagConfig);
+  sections.forEach((section, index) => {
+    let sectionText = getSectionMarkup(block, entityMap, section, customEntityTransform, customColors);
     if (index === 0) {
       sectionText = trimLeadingZeros(sectionText);
     }
-    if (index === entitySections.length - 1) {
+    if (index === sections.length - 1) {
       sectionText = trimTrailingZeros(sectionText);
     }
     blockMarkup.push(sectionText);
@@ -422,10 +508,23 @@ export function getBlockInnerMarkup(block: Object, entityMap: Object, customColo
 /**
 * Function will return html for the block.
 */
-export function getBlockMarkup(block: Object, entityMap: Object, directional: boolean, customColors: Object): string {
+export function getBlockMarkup(
+  block: Object,
+  entityMap: Object,
+  hashtagConfig: Object,
+  directional: boolean,
+  customEntityTransform: Function,
+  customColors: Object
+): string {
   const blockHtml = [];
   if (isAtomicEntityBlock(block)) {
-    blockHtml.push(getEntityMarkup(entityMap, block.entityRanges[0].key));
+    blockHtml.push(
+      getEntityMarkup(
+        entityMap,
+        block.entityRanges[0].key,
+        undefined,
+        customEntityTransform,
+      ));
   } else {
 
     const blockTag = getBlockTag(block.type);
@@ -440,7 +539,7 @@ export function getBlockMarkup(block: Object, entityMap: Object, directional: bo
         blockHtml.push(' dir = "auto"');
       }
       blockHtml.push('>');
-      blockHtml.push(getBlockInnerMarkup(block, entityMap, customColors));
+      blockHtml.push(getBlockInnerMarkup(block, entityMap, hashtagConfig, customEntityTransform, customColors));
       blockHtml.push(`</${blockTag}>`);
     } else {
       blockHtml.push('<br/>')

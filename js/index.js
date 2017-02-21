@@ -4,9 +4,16 @@ import { getBlockMarkup } from './block';
 import { isList, getListMarkup } from './list';
 
 /**
-* The funciton will generate html markup for given draftjs editorContent.
+* The function will generate html markup for given draftjs editorContent.
 */
-export default function draftToHtml(editorContent: Object, directional: boolean, customColors: Object): string {
+
+export default function draftToHtml(
+  editorContent: ContentState,
+  hashtagConfig: Object,
+  directional: boolean,
+  customEntityTransform: Function,
+  customColors: Object
+): string {
   const html = [];
   if (editorContent) {
     const { blocks, entityMap } = editorContent;
@@ -17,16 +24,23 @@ export default function draftToHtml(editorContent: Object, directional: boolean,
           listBlocks.push(block);
         } else {
           if (listBlocks.length > 0) {
-            const listHtml = getListMarkup(listBlocks, entityMap, customColors);
+            const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, customEntityTransform, customColors);
             html.push(listHtml);
             listBlocks = [];
           }
-          const blockHtml = getBlockMarkup(block, entityMap, directional, customColors);
+          const blockHtml = getBlockMarkup(
+            block,
+            entityMap,
+            hashtagConfig,
+            directional,
+            customEntityTransform,
+            customColors
+          );
           html.push(blockHtml);
         }
       });
       if (listBlocks.length > 0) {
-        const listHtml = getListMarkup(listBlocks, entityMap, customColors);
+        const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, customEntityTransform, customColors);
         html.push(listHtml);
         listBlocks = [];
       }
