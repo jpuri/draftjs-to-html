@@ -22,7 +22,8 @@ export function getListMarkup(
   entityMap: Object,
   hashtagConfig: Object,
   directional: boolean,
-  customEntityTransform: Function
+  customEntityTransform: Function,
+  customColors: Object
 ): string {
   const listHtml = [];
   let nestedListBlock = [];
