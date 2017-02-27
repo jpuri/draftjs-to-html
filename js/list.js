@@ -25,6 +25,7 @@ export function getListMarkup(
   customEntityTransform: Function,
   customColors: Object
 ): string {
+
   const listHtml = [];
   let nestedListBlock = [];
   let previousBlock;
@@ -42,7 +43,8 @@ export function getListMarkup(
           entityMap,
           hashtagConfig,
           directional,
-          customEntityTransform
+          customEntityTransform,
+          customColors
         ));
         nestedListBlock = [];
       }
@@ -77,7 +79,8 @@ export function getListMarkup(
       entityMap,
       hashtagConfig,
       directional,
-      customEntityTransform
+      customEntityTransform,
+      customColors
     ));
   }
   listHtml.push(`</${getBlockTag(previousBlock.type)}>\n`);

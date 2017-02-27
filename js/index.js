@@ -24,7 +24,7 @@ export default function draftToHtml(
           listBlocks.push(block);
         } else {
           if (listBlocks.length > 0) {
-            const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, customEntityTransform, customColors);
+            const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, directional, customEntityTransform, customColors);
             html.push(listHtml);
             listBlocks = [];
           }
@@ -40,7 +40,7 @@ export default function draftToHtml(
         }
       });
       if (listBlocks.length > 0) {
-        const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, customEntityTransform, customColors);
+        const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, directional, customEntityTransform, customColors);
         html.push(listHtml);
         listBlocks = [];
       }

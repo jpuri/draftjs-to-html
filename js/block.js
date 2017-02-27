@@ -516,6 +516,7 @@ export function getBlockMarkup(
   customEntityTransform: Function,
   customColors: Object
 ): string {
+
   const blockHtml = [];
   if (isAtomicEntityBlock(block)) {
     blockHtml.push(
