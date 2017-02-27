@@ -14,8 +14,24 @@ This is draft to HTML library I wrote for one of my projects. I am open-sourcing
 import draftToHtml from 'draftjs-to-html';
 
 const rawContentState = convertToRaw(editorState.getCurrentContent());
-const markup = draftToHtml(contentState, directional);
+const markup = draftToHtml(contentState, hashtagConfig, directional, customEntityTransform);
 ```
+The function parameters are:
+
+1. **contentState**: Its instance of  [RawDraftContentState](https://facebook.github.io/draft-js/docs/api-reference-data-conversion.html#content)
+
+2. **hashConfig**: Its configuration object for hashtag, its required only if hashtags are used. If the object is not defined hashtags will be output as simple text in the markdown.
+    ```
+    hashConfig = {
+      trigger: '#',
+      separator: ' ',
+    }
+    ```
+    Here trigger is character that marks starting of hashtag (default '#') and separator is character that separates characters (default ' ').
+
+3. **directional**: Boolean, if directional is true text is aligned according to bidi algorithm.
+
+4. **customEntityTransform**: Its function to render custom defined entities by user, its also optional.
 
 ## Supported conversions
 Following is the list of conversions it supports:
@@ -48,17 +64,21 @@ Following is the list of conversions it supports:
 4. Converts inline styles color, background-color, font-size, font-family to a span tag with inline style details:
 `<span style="color:xyz;font-size:xx">`. The inline styles should start with strings `color` or `font-size` like `color-red`, `color-green` or `fontsize-12`, `fontsize-20`.
 
-5. Converts entity range of type link to anchor tag using entity data url for href: `<a href="url" />`.
+5. Converts entity range of type link to anchor tag using entity data url for href: `<a href="url">text</a>`.
 
-6. Converts entity range of type mention to anchor tag using entity data url for href and also adds class to it: `<a href="url" class="wysiwyg-mention" />`.
+6. Converts entity range of type mention to anchor tag using entity data url for href and also adds class to it: `<a href="url" class="wysiwyg-mention">text</a>`.
 
 7. Converts atomic entity image to image tag using entity data src for image source: `<img src="src" />`.
 
 8. Converts embedded links to iFrames.
 
-9. Adding style property to block tag for block level styles like text-align: `<p style="text-align: right">text</p>`.
+9. Converts hashtags to anchor tag: `<a href="#tag" class="wysiwyg-hashtag">#tag</a>`.
 
-10. RTL, if directional function parameter is true, generated blocks have property `dir = "auto"` thus they get aligned according to bidi algorithm.
+9. `customEntityTransform` can be used for transformation of a custom entity block to html.
+
+10. Adding style property to block tag for block level styles like text-align: `<p style="text-align: right">text</p>`.
+
+11. RTL, if directional function parameter is true, generated blocks have property `dir = "auto"` thus they get aligned according to bidi algorithm.
 
 ## License
 MIT.
