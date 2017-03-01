@@ -17,12 +17,11 @@ module.exports = {
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //        compressor: {
-    //            warnings: true
-    //        },
-    //      mangle: false
-    //  }),
+    new webpack.optimize.UglifyJsPlugin({
+       compressor: {
+           warnings: true
+       }
+     }),
   ],
   module: {
     loaders: [{
