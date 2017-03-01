@@ -196,7 +196,7 @@ export function getStylesAtOffset(inlineStyles: Object, offset: number): Object 
     styles.FONTFAMILY = inlineStyles.FONTFAMILY[offset];
   }
   if (inlineStyles.UNDERLINE[offset]) {
-    styles.UNDERLINE = true;
+    styles.UNDERLINE = 'underline';
   }
   if (inlineStyles.ITALIC[offset]) {
     styles.ITALIC = true;
@@ -248,7 +248,7 @@ export function addInlineStyleMarkup(style: string, content: string): string {
   } else if (style === 'ITALIC') {
     return `<em>${content}</em>`;
   } else if (style === 'UNDERLINE') {
-    return `<ins>${content}</ins>`;
+      return `<ins>${content}</ins>`;
   } else if (style === 'STRIKETHROUGH') {
     return `<del>${content}</del>`;
   } else if (style === 'CODE') {
@@ -260,6 +260,8 @@ export function addInlineStyleMarkup(style: string, content: string): string {
   }
   return content;
 }
+
+
 
 /**
 * The function returns text for given section of block after doing required character replacements.
@@ -292,7 +294,8 @@ function getSectionText(text: Array<string>): string {
 export function addStylePropertyMarkup(styleSection: Object, customColors: Object): string {
   const { styles, text } = styleSection;
   const content = getSectionText(text);
-  if (styles && (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY)) {
+
+  if (styles && (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY || styles.UNDERLINE)) {
     let styleString = 'style="';
     if (styles.COLOR) {
       let fontColor = customColors[styles.COLOR]
@@ -307,6 +310,9 @@ export function addStylePropertyMarkup(styleSection: Object, customColors: Objec
     }
     if (styles.FONTFAMILY) {
       styleString += `font-family: ${styles.FONTFAMILY};`;
+    }
+    if (styles.UNDERLINE){
+      styleString += `text-decoration: ${styles.UNDERLINE};`;
     }
     styleString += '"';
     return `<span ${styleString}>${content}</span>`;
@@ -434,7 +440,7 @@ like color, background-color, font-size are applicable.
 */
 function getInlineStyleSectionMarkup(block: Object, styleSection: Object, customColors: Object): string {
   const stylePropertySections = getInlineStyleSections(
-    block, ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY'], styleSection.start, styleSection.end,
+    block, ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY', 'UNDERLINE'], styleSection.start, styleSection.end,
   );
   let styleSectionText = '';
   stylePropertySections.forEach((stylePropertySection) => {
@@ -459,7 +465,7 @@ function getSectionMarkup(
   const entityInlineMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
     block,
-    ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'],
+    ['BOLD', 'ITALIC', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'],
     section.start,
     section.end,
   );

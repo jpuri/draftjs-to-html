@@ -1,5 +1,4 @@
 /* @flow */
-
 import { getBlockMarkup } from './block';
 import { isList, getListMarkup } from './list';
 
