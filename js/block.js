@@ -312,7 +312,6 @@ export function addStylePropertyMarkup(styleSection: Object, customColors: Objec
       styleString += `font-family: ${styles.FONTFAMILY};`;
     }
     if (styles.UNDERLINE){
-      //let underLine = 'underline'
       styleString += `text-decoration: ${styles.UNDERLINE};`;
     }
     styleString += '"';

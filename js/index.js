@@ -11,7 +11,7 @@ export default function draftToHtml(
   hashtagConfig: Object,
   directional: boolean,
   customEntityTransform: Function,
-  customColors: Objects
+  customColors: Object
 ): string {
   const html = [];
   if (editorContent) {
