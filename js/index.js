@@ -1,5 +1,4 @@
 /* @flow */
-
 import { getBlockMarkup } from './block';
 import { isList, getListMarkup } from './list';
 
@@ -12,7 +11,7 @@ export default function draftToHtml(
   hashtagConfig: Object,
   directional: boolean,
   customEntityTransform: Function,
-  customColors: Object
+  customColors: Objects
 ): string {
   const html = [];
   if (editorContent) {
