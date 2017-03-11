@@ -37,7 +37,7 @@ export default function draftToHtml(
         }
       });
       if (listBlocks.length > 0) {
-        const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, customEntityTransform);
+        const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig,directional, customEntityTransform);
         html.push(listHtml);
         listBlocks = [];
       }
