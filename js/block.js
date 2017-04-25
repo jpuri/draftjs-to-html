@@ -287,9 +287,7 @@ function getSectionText(text: Array<string>): string {
 /**
 * Function returns html for text depending on inline style tags applicable to it.
 */
-export function addStylePropertyMarkup(styleSection: Object): string {
-  const { styles, text } = styleSection;
-  const content = getSectionText(text);
+export function addStylePropertyMarkup(styles: Object, text: string): string {
   if (styles && (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY)) {
     let styleString = 'style="';
     if (styles.COLOR) {
@@ -305,9 +303,9 @@ export function addStylePropertyMarkup(styleSection: Object): string {
       styleString += `font-family: ${styles.FONTFAMILY};`;
     }
     styleString += '"';
-    return `<span ${styleString}>${content}</span>`;
+    return `<span ${styleString}>${text}</span>`;
   }
-  return content;
+  return text;
 }
 
 /**
@@ -415,8 +413,9 @@ export function trimTrailingZeros(sectionText: string): string {
 * The method returns markup for section to which inline styles
 * like BOLD, ITALIC, UNDERLINE, STRIKETHROUGH, CODE, SUPERSCRIPT, SUBSCRIPT are applicable.
 */
-function getStyleTagSectionMarkup(styles: Object, text: string): string {
-  let content = text;
+function getStyleTagSectionMarkup(styleSection: Object): string {
+  const { styles, text } = styleSection;
+  let content = getSectionText(text);
   forEach(styles, (style, value) => {
     content = addInlineStyleMarkup(style, content, value);
   });
@@ -429,14 +428,14 @@ function getStyleTagSectionMarkup(styles: Object, text: string): string {
 like color, background-color, font-size are applicable.
 */
 function getInlineStyleSectionMarkup(block: Object, styleSection: Object): string {
-  const stylePropertySections = getInlineStyleSections(
-    block, ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY'], styleSection.start, styleSection.end,
+  const styleTagSections = getInlineStyleSections(
+    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], styleSection.start, styleSection.end,
   );
   let styleSectionText = '';
-  stylePropertySections.forEach((stylePropertySection) => {
-    styleSectionText += addStylePropertyMarkup(stylePropertySection);
+  styleTagSections.forEach((stylePropertySection) => {
+    styleSectionText += getStyleTagSectionMarkup(stylePropertySection);
   });
-  styleSectionText = getStyleTagSectionMarkup(styleSection.styles, styleSectionText);
+  styleSectionText = addStylePropertyMarkup(styleSection.styles, styleSectionText)
   return styleSectionText;
 }
 
@@ -454,7 +453,7 @@ function getSectionMarkup(
   const entityInlineMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
     block,
-    ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'],
+    ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY'],
     section.start,
     section.end,
   );
