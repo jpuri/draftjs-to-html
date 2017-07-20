@@ -68,7 +68,7 @@ Following is the list of conversions it supports:
 
 6. Converts entity range of type mention to anchor tag using entity data url for href and also adds class to it: `<a href="url" class="wysiwyg-mention">text</a>`.
 
-7. Converts atomic entity image to image tag using entity data src for image source: `<img src="src" />`.
+7. Converts atomic entity image to image tag using entity data src (and alt if present) for image source: `<img src="src" alt="alt_text"/>`.
 
 8. Converts embedded links to iFrames.
 
