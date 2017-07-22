@@ -17,9 +17,9 @@ import draftToHtml from 'draftjs-to-html';
 const rawContentState = convertToRaw(editorState.getCurrentContent());
 
 const markup = draftToHtml(
-  contentState,
-  hashtagConfig,
-  directional,
+  contentState, 
+  hashtagConfig, 
+  directional, 
   customEntityTransform
 );
 ```
@@ -84,7 +84,9 @@ Following is the list of conversions it supports:
 
 9. Converts hashtags to anchor tag: `<a href="#tag" class="wysiwyg-hashtag">#tag</a>`.
 
-9. `customEntityTransform` can be used for transformation of a custom entity block to html.
+9. `customEntityTransform` can be used for transformation of a custom entity block to html. If present its call to generate html for entity. It can take 2 parameter:
+   1. `entity` ( object with { type, mutalibity, data})
+   2. `text` text present in the block.
 
 10. Adding style property to block tag for block level styles like text-align: `<p style="text-align: right">text</p>`.
 
