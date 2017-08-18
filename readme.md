@@ -58,7 +58,8 @@ Following is the list of conversions it supports:
     | 7 | unordered-list-item | ul |
     | 8 | ordered-list-item | ol |
     | 9 | blockquote | blockquote |
-    | 10 | unstyled | p |
+    | 10 | code | pre |
+    | 11 | unstyled | p |
 
     It performs these additional changes to text of blocks:
     - replace blank space in beginning and end of block with `&nbsp;`
