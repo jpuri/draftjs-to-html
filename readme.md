@@ -17,7 +17,7 @@ import draftToHtml from 'draftjs-to-html';
 const rawContentState = convertToRaw(editorState.getCurrentContent());
 
 const markup = draftToHtml(
-  contentState, 
+  rawContentState, 
   hashtagConfig, 
   directional, 
   customEntityTransform
