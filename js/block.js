@@ -244,7 +244,7 @@ export function sameStyleAsPrevious(
 */
 export function addInlineStyleMarkup(style: string, content: string): string {
   if (style === 'BOLD') {
-    return `<strong>${content}</strong>`;
+    return `<b>${content}</b>`;
   } else if (style === 'ITALIC') {
     return `<em>${content}</em>`;
   } else if (style === 'UNDERLINE') {
