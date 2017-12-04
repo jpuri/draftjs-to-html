@@ -1,10 +1,11 @@
 require('babel-register')();
 
-const jsdom = require('jsdom').jsdom;
+const { JSDOM } = require('jsdom');
 
 const exposedProperties = ['window', 'navigator', 'document'];
 
-global.document = jsdom('');
+const { document } = (new JSDOM('')).window;
+global.document = document;
 global.window = document.defaultView;
 global.HTMLElement = window.HTMLElement;
 global.HTMLAnchorElement = window.HTMLAnchorElement;
