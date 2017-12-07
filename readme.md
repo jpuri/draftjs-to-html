@@ -75,7 +75,7 @@ Following is the list of conversions it supports:
 4. Converts inline styles color, background-color, font-size, font-family to a span tag with inline style details:
 `<span style="color:xyz;font-size:xx">`. (The inline styles in JSON object should start with strings `color` or `font-size` like `color-red`, `color-green` or `fontsize-12`, `fontsize-20`).
 
-5. Converts entity range of type link to anchor tag using entity data url for href, target for target: `<a href="url" target="_self">text</a>`. Default target is `_self`.
+5. Converts entity range of type link to anchor tag using entity data url for href, targetOption for target: `<a href="url" target="_self">text</a>`. Default target is `_self`.
 
 6. Converts entity range of type mention to anchor tag using entity data url for href and value for data-value, it also adds class to it: `<a href="url" class="wysiwyg-mention" data-mention data-value="value">text</a>`.
 

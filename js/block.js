@@ -329,8 +329,8 @@ function getEntityMarkup(
     return `<a href="${entity.data.url}" class="wysiwyg-mention" data-mention data-value="${entity.data.value}">${text}</a>`;
   }
   if (entity.type === 'LINK') {
-    const target = entity.data.target || '_self';
-    return `<a href="${entity.data.url}" target="${target}">${text}</a>`;
+    const targetOption = entity.data.targetOption || '_self';
+    return `<a href="${entity.data.url}" target="${targetOption}">${text}</a>`;
   }
   if (entity.type === 'IMAGE') {
     return `<img src="${entity.data.src}" alt="${entity.data.alt}" style="float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
