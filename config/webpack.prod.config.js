@@ -3,13 +3,12 @@ var webpack = require('webpack');
 
 module.exports = {
   devtool: 'source-map',
-  entry: [
-    './js/index'
-  ],
+  entry: './js/index',
   output: {
     path: path.join(__dirname, '../lib'),
     filename: 'draftjs-to-html.js',
-    libraryTarget: 'commonjs2',
+    library: 'draftjsToHtml',
+    libraryTarget: 'umd',
   },
   plugins: [
     new webpack.DefinePlugin({
