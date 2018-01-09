@@ -7,10 +7,10 @@ import { isList, getListMarkup } from './list';
 * The function will generate html markup for given draftjs editorContent.
 */
 export default function draftToHtml(
-  editorContent: ContentState,
+  editorContent: Object,
   hashtagConfig: Object,
   directional: boolean,
-  customEntityTransform: Function
+  customEntityTransform: Function,
 ): string {
   const html = [];
   if (editorContent) {
@@ -22,7 +22,7 @@ export default function draftToHtml(
           listBlocks.push(block);
         } else {
           if (listBlocks.length > 0) {
-            const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, customEntityTransform);
+            const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, customEntityTransform); // eslint-disable-line max-len
             html.push(listHtml);
             listBlocks = [];
           }
@@ -37,7 +37,7 @@ export default function draftToHtml(
         }
       });
       if (listBlocks.length > 0) {
-        const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig,directional, customEntityTransform);
+        const listHtml = getListMarkup(listBlocks, entityMap, hashtagConfig, directional, customEntityTransform); // eslint-disable-line max-len
         html.push(listHtml);
         listBlocks = [];
       }

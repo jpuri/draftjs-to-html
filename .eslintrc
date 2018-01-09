@@ -1,9 +1,10 @@
 {
   "parser": "babel-eslint",
-  "plugins": [ "mocha" ],
   "extends": "airbnb",
-  "globals": {
-    "describe": true,
-    "it": true
+  "plugins": [ "mocha" ],
+  "env": {
+    "browser": true,
+    "mocha": true,
+    "es6": true
   }
 }

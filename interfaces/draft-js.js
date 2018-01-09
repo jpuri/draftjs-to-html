@@ -1,3 +1,3 @@
 declare module 'draft-js' {
-  declare var exports: any;
+  declare module.exports: any;
 }
