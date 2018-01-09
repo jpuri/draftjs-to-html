@@ -3,8 +3,6 @@
   "extends": "airbnb",
   "plugins": [ "mocha" ],
   "env": {
-    "browser": true,
-    "mocha": true,
-    "es6": true
+    "mocha": true
   }
 }
