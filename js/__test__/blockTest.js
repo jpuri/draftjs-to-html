@@ -136,27 +136,33 @@ describe('addInlineStyleMarkup test suite', () => {
 });
 
 describe('addStylePropertyMarkup test suite', () => {
-  let markup = addStylePropertyMarkup(
-    {
-      COLOR: 'red',
-      BGCOLOR: 'pink',
-      FONTSIZE: 10,
-      FONTFAMILY: 'Arial',
-    },
-    'test'
-  );
-  assert.equal(
-    markup,
-    '<span style="color: red;background-color: pink;font-size: 10px;font-family: Arial;">test</span>',
-  );
-  markup = addStylePropertyMarkup({ COLOR: 'red' }, 'test');
-  assert.equal(markup, '<span style="color: red;">test</span>');
-  markup = addStylePropertyMarkup({ BGCOLOR: 'pink' }, 'test');
-  assert.equal(markup, '<span style="background-color: pink;">test</span>');
-  markup = addStylePropertyMarkup({ FONTFAMILY: 'Arial' }, 'test');
-  assert.equal(markup, '<span style="font-family: Arial;">test</span>');
-  markup = addStylePropertyMarkup({ BOLD: true }, 'test');
-  assert.equal(markup, 'test');
-  markup = addStylePropertyMarkup(undefined, 'test');
-  assert.equal(markup, 'test');
+  it('should correctly add styles based on styles object', () => {
+    let markup = addStylePropertyMarkup(
+      {
+        COLOR: 'red',
+        BGCOLOR: 'pink',
+        FONTSIZE: 10,
+        FONTFAMILY: 'Arial',
+      },
+      'test'
+    );
+    assert.equal(
+      markup,
+      '<span style="color: red;background-color: pink;font-size: 10px;font-family: Arial;">test</span>',
+    );
+    markup = addStylePropertyMarkup({ COLOR: 'red' }, 'test');
+    assert.equal(markup, '<span style="color: red;">test</span>');
+    markup = addStylePropertyMarkup({ BGCOLOR: 'pink' }, 'test');
+    assert.equal(markup, '<span style="background-color: pink;">test</span>');
+    markup = addStylePropertyMarkup({ FONTFAMILY: 'Arial' }, 'test');
+    assert.equal(markup, '<span style="font-family: Arial;">test</span>');
+    markup = addStylePropertyMarkup({ FONTSIZE: 'medium' }, 'test');
+    assert.equal(markup, '<span style="font-size: medium;">test</span>');
+    markup = addStylePropertyMarkup({ FONTSIZE: '24' }, 'test');
+    assert.equal(markup, '<span style="font-size: 24px;">test</span>');
+    markup = addStylePropertyMarkup({ BOLD: true }, 'test');
+    assert.equal(markup, 'test');
+    markup = addStylePropertyMarkup(undefined, 'test');
+    assert.equal(markup, 'test');
+  });
 });
