@@ -116,8 +116,10 @@ describe('sameStyleAsPrevious test suite', () => {
       FONTSIZE: [10, 10, 20],
       FONTFAMILY: ['Arial', 'Arial', 'Georgia'],
     };
-    const sameStyled = sameStyleAsPrevious(inlineStyles,
-      ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE'], 3);
+    const sameStyled = sameStyleAsPrevious(
+      inlineStyles,
+      ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE'], 3,
+    );
     assert.isNotTrue(sameStyled);
   });
 });

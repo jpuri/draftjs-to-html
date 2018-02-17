@@ -1,3 +1,3 @@
 declare module 'sinon' {
-  declare var exports: any;
+  declare module.exports: any;
 }

@@ -1,3 +1,3 @@
 declare module 'chai' {
-  declare var exports: any;
+  declare module.exports: any;
 }

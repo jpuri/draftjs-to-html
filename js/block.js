@@ -64,8 +64,8 @@ function getHashtagRanges(blockText: string, hashtagConfig: Object): Array<Objec
       if (startIndex >= 0) {
         const endIndex =
           text.indexOf(separator) >= 0
-          ? text.indexOf(separator)
-          : text.length;
+            ? text.indexOf(separator)
+            : text.length;
         const hashtag = text.substr(0, endIndex);
         if (hashtag && hashtag.length > 0) {
           sections.push({
@@ -87,7 +87,7 @@ function getHashtagRanges(blockText: string, hashtagConfig: Object): Array<Objec
 */
 function getSections(
   block: Object,
-  hashtagConfig: Object
+  hashtagConfig: Object,
 ): Array<Object> {
   const sections = [];
   let lastOffset = 0;
@@ -158,7 +158,7 @@ function getStyleArrayForBlock(block: Object): Object {
   };
   if (inlineStyleRanges && inlineStyleRanges.length > 0) {
     inlineStyleRanges.forEach((range) => {
-      const offset = range.offset;
+      const { offset } = range;
       const length = offset + range.length;
       for (let i = offset; i < length; i += 1) {
         if (range.style.indexOf('color-') === 0) {
@@ -316,7 +316,7 @@ function getEntityMarkup(
   entityMap: Object,
   entityKey: number,
   text: string,
-  customEntityTransform: Function
+  customEntityTransform: Function,
 ): string {
   const entity = entityMap[entityKey];
   if (typeof customEntityTransform === 'function') {
@@ -429,14 +429,12 @@ function getStyleTagSectionMarkup(styleSection: Object): string {
 like color, background-color, font-size are applicable.
 */
 function getInlineStyleSectionMarkup(block: Object, styleSection: Object): string {
-  const styleTagSections = getInlineStyleSections(
-    block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], styleSection.start, styleSection.end,
-  );
+  const styleTagSections = getInlineStyleSections(block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], styleSection.start, styleSection.end);
   let styleSectionText = '';
   styleTagSections.forEach((stylePropertySection) => {
     styleSectionText += getStyleTagSectionMarkup(stylePropertySection);
   });
-  styleSectionText = addStylePropertyMarkup(styleSection.styles, styleSectionText)
+  styleSectionText = addStylePropertyMarkup(styleSection.styles, styleSectionText);
   return styleSectionText;
 }
 
@@ -449,8 +447,8 @@ function getSectionMarkup(
   block: Object,
   entityMap: Object,
   section: Object,
-  customEntityTransform: Function
-  ): string {
+  customEntityTransform: Function,
+): string {
   const entityInlineMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
     block,
@@ -464,7 +462,7 @@ function getSectionMarkup(
   let sectionText = entityInlineMarkup.join('');
   if (section.type === 'ENTITY') {
     if (section.entityKey !== undefined && section.entityKey !== null) {
-      sectionText = getEntityMarkup(entityMap, section.entityKey, sectionText, customEntityTransform);
+      sectionText = getEntityMarkup(entityMap, section.entityKey, sectionText, customEntityTransform); // eslint-disable-line max-len
     }
   } else if (section.type === 'HASHTAG') {
     sectionText = `<a href="${sectionText}" class="wysiwyg-hashtag">${sectionText}</a>`;
@@ -480,7 +478,7 @@ export function getBlockInnerMarkup(
   block: Object,
   entityMap: Object,
   hashtagConfig: Object,
-  customEntityTransform: Function
+  customEntityTransform: Function,
 ): string {
   const blockMarkup = [];
   const sections = getSections(block, hashtagConfig);
@@ -506,17 +504,16 @@ export function getBlockMarkup(
   entityMap: Object,
   hashtagConfig: Object,
   directional: boolean,
-  customEntityTransform: Function
+  customEntityTransform: Function,
 ): string {
   const blockHtml = [];
   if (isAtomicEntityBlock(block)) {
-    blockHtml.push(
-      getEntityMarkup(
-        entityMap,
-        block.entityRanges[0].key,
-        undefined,
-        customEntityTransform,
-      ));
+    blockHtml.push(getEntityMarkup(
+      entityMap,
+      block.entityRanges[0].key,
+      undefined,
+      customEntityTransform,
+    ));
   } else {
     const blockTag = getBlockTag(block.type);
     if (blockTag) {
