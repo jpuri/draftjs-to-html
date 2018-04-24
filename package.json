@@ -1,6 +1,6 @@
 {
   "name": "@shoflo/draftjs-to-html",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "description": "A library for draftjs to html conversion.",
   "main": "lib/draftjs-to-html.js",
   "devDependencies": {
@@ -27,7 +27,7 @@
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
     "react-dom": "^15.4.2",
-    "rimraf": "^2.5.4",
+    "rimraf": "^2.6.2",
     "sinon": "^1.17.7",
     "webpack": "^2.2.1",
     "webpack-dev-middleware": "^1.10.0"

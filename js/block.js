@@ -279,6 +279,8 @@ function getSectionText(text: Array<string>): string {
           return '&lt;';
         case '>':
           return '&gt;';
+        case ' ':
+          return '&nbsp;';
         default:
           return ch;
       }
