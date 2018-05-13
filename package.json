@@ -27,15 +27,17 @@
     "rimraf": "^2.6.2",
     "rollup": "^0.53.3",
     "rollup-plugin-babel": "^3.0.3",
-    "sinon": "^4.1.4"
+    "sinon": "^4.1.4",
+    "size-limit": "^0.14.1"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/jpuri/draftjs-to-html.git"
   },
   "scripts": {
+    "size": "size-limit",
     "clean": "rimraf lib",
-    "build": "npm run clean && rollup -c",
+    "build": "npm run clean && rollup -c && npm run size",
     "dev": "rollup -c -w",
     "test": "NODE_ENV=test mocha --require config/test-compiler.js config/test-setup.js js/**/*Test.js",
     "lint": "eslint js",
@@ -43,5 +45,12 @@
     "check": "npm run lint && npm run flow"
   },
   "author": "Jyoti Puri",
-  "license": "MIT"
+  "license": "MIT",
+  "size-limit": [
+    {
+      "path": "lib/*",
+      "webpack": false,
+      "limit": "4.26 KB"
+    }
+  ]
 }
