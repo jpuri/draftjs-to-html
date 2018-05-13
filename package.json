@@ -1,6 +1,6 @@
 {
   "name": "draftjs-to-html",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "A library for draftjs to html conversion.",
   "main": "lib/draftjs-to-html.js",
   "devDependencies": {
@@ -50,7 +50,7 @@
     {
       "path": "lib/*",
       "webpack": false,
-      "limit": "4.26 KB"
+      "limit": "4.5 KB"
     }
   ]
 }
