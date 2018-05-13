@@ -130,8 +130,8 @@ function getSections(
 * Function to check if the block is an atomic entity block.
 */
 function isAtomicEntityBlock(block: Object): boolean {
-  if ((block.entityRanges.length > 0 && isEmptyString(block.text)) ||
-    block.type === 'atomic') {
+  if (block.entityRanges.length > 0 && (isEmptyString(block.text) ||
+    block.type === 'atomic')) {
     return true;
   }
   return false;
