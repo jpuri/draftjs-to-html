@@ -248,7 +248,7 @@ export function addInlineStyleMarkup(style: string, content: string): string {
   } else if (style === 'ITALIC') {
     return `<em>${content}</em>`;
   } else if (style === 'UNDERLINE') {
-      return `<ins>${content}</ins>`;
+    return `<ins>${content}</ins>`;
   } else if (style === 'STRIKETHROUGH') {
     return `<del>${content}</del>`;
   } else if (style === 'CODE') {
@@ -260,8 +260,24 @@ export function addInlineStyleMarkup(style: string, content: string): string {
   }
   return content;
 }
-
-
+/**
+ *
+ * Converts symbols to html characters
+ */
+function getFormattedCharacter(ch) {
+  switch (ch) {
+    case '\n':
+      return '<br>\n';
+    case '&':
+      return '&amp;';
+    case '<':
+      return '&lt;';
+    case '>':
+      return '&gt;';
+    default:
+      return ch;
+  }
+}
 
 /**
 * The function returns text for given section of block after doing required character replacements.
@@ -269,26 +285,36 @@ export function addInlineStyleMarkup(style: string, content: string): string {
 function getSectionText(text: Array<string>): string {
 
   if (text && text.length > 0) {
+    let spaces = '';
+    const preWrappedOpenTag = `<span style="white-space:pre-wrap;display:inline-block;">`;
+    const preWrappedCloseTag = `</span>`;
     const chars = text.map((ch) => {
-      switch (ch) {
-        case '\n':
-          return '<br>\n';
-        case '&':
-          return '&amp;';
-        case '<':
-          return '&lt;';
-        case '>':
-          return '&gt;';
-        case ' ':
-          return '&nbsp;';
-        default:
-          return ch;
+      let spacesBlock = null;
+      if (ch === ' ') {
+        spaces = spaces.concat(' ');
+        return '';
       }
+
+      if (spaces !== '') {
+        spacesBlock = preWrappedOpenTag.concat(spaces).concat(preWrappedCloseTag);
+        spaces = '';
+      }
+
+      const formattedCharacter = getFormattedCharacter(ch);
+
+      if (spacesBlock) {
+        return spacesBlock.concat(formattedCharacter);
+      }
+
+      return formattedCharacter;
     });
+
     return chars.join('');
   }
+
   return '';
 }
+
 
 /**
 * Function returns html for text depending on inline style tags applicable to it.
