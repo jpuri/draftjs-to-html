@@ -288,10 +288,15 @@ function getSectionText(text: Array<string>): string {
     let spaces = '';
     const preWrappedOpenTag = `<span style="white-space:pre-wrap;display:inline-block;">`;
     const preWrappedCloseTag = `</span>`;
-    const chars = text.map((ch) => {
+    const chars = text.map((ch, indx) => {
       let spacesBlock = null;
       if (ch === ' ') {
         spaces = spaces.concat(' ');
+
+        //If it's the last one, we need to go ahead and insert the space block - see https://github.com/SHOFLO/Issues/issues/4213
+        if (indx === (text.length - 1)) {
+          return `${preWrappedOpenTag}${spaces}${preWrappedCloseTag}`
+        }
         return '';
       }
 
