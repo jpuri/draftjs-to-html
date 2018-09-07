@@ -16,7 +16,7 @@ const blockTypesMapping: Object = {
   blockquote: 'blockquote',
 };
 
-// Used for pre-wrapping white space text blocks
+// Used for pre-wrapping text blocks to prevent whitespace collapse
 const preWrappedOpenTag = `<span style="white-space:pre-wrap;">`;
 const preWrappedCloseTag = `</span>`;
 
@@ -271,7 +271,7 @@ export function addInlineStyleMarkup(style: string, content: string): string {
 function getFormattedCharacter(ch) {
   switch (ch) {
     case '\n':
-    return '<br>\n';
+      return '<br>\n';
     case '&':
       return '&amp;';
     case '<':
