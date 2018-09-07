@@ -16,6 +16,10 @@ const blockTypesMapping: Object = {
   blockquote: 'blockquote',
 };
 
+// Used for pre-wrapping white space text blocks
+const preWrappedOpenTag = `<span style="white-space:pre-wrap;">`;
+const preWrappedCloseTag = `</span>`;
+
 /**
 * Function will return HTML tag for a block.
 */
@@ -267,7 +271,7 @@ export function addInlineStyleMarkup(style: string, content: string): string {
 function getFormattedCharacter(ch) {
   switch (ch) {
     case '\n':
-      return '<br>\n';
+    return '<br>\n';
     case '&':
       return '&amp;';
     case '<':
@@ -285,30 +289,12 @@ function getFormattedCharacter(ch) {
 function getSectionText(text: Array<string>): string {
 
   if (text && text.length > 0) {
-    let spaces = '';
-    const preWrappedOpenTag = `<span style="white-space:pre-wrap;display:inline-block;">`;
-    const preWrappedCloseTag = `</span>`;
-    const chars = text.map((ch, indx) => {
-      let spacesBlock = null;
-      if (ch === ' ') {
-        spaces = spaces.concat(' ');
-
-        //If it's the last one, we need to go ahead and insert the space block - see https://github.com/SHOFLO/Issues/issues/4213
-        if (indx === (text.length - 1)) {
-          return `${preWrappedOpenTag}${spaces}${preWrappedCloseTag}`
-        }
-        return '';
-      }
-
-      if (spaces !== '') {
-        spacesBlock = preWrappedOpenTag.concat(spaces).concat(preWrappedCloseTag);
-        spaces = '';
-      }
+    const chars = text.map((ch) => {
 
       const formattedCharacter = getFormattedCharacter(ch);
 
-      if (spacesBlock) {
-        return spacesBlock.concat(formattedCharacter);
+      if (formattedCharacter === '<br>\n') {
+        return preWrappedCloseTag.concat(formattedCharacter).concat(preWrappedOpenTag);
       }
 
       return formattedCharacter;
@@ -505,7 +491,9 @@ function getSectionMarkup(
   inlineStyleSections.forEach((styleSection) => {
     entityInlineMarkup.push(getInlineStyleSectionMarkup(block, styleSection, customColors));
   });
-  let sectionText = entityInlineMarkup.join('');
+
+  let sectionText = preWrappedOpenTag.concat(entityInlineMarkup.join('').concat(preWrappedCloseTag));
+
   if (section.type === 'ENTITY') {
     if (section.entityKey !== undefined && section.entityKey !== null) {
       sectionText = getEntityMarkup(entityMap, section.entityKey, sectionText, customEntityTransform);
@@ -566,10 +554,9 @@ export function getBlockMarkup(
         customEntityTransform,
       ));
   } else {
-
     const blockTag = getBlockTag(block.type);
 
-    if (blockTag && block.text) {
+    if (blockTag) {
       blockHtml.push(`<${blockTag}`);
       const blockStyle = getBlockStyle(block.data);
       if (blockStyle) {
@@ -579,10 +566,11 @@ export function getBlockMarkup(
         blockHtml.push(' dir = "auto"');
       }
       blockHtml.push('>');
-      blockHtml.push(getBlockInnerMarkup(block, entityMap, hashtagConfig, customEntityTransform, customColors));
+      const innerBlockMarkup = getBlockInnerMarkup(block, entityMap, hashtagConfig, customEntityTransform, customColors);
+      if (!innerBlockMarkup || innerBlockMarkup === '') {
+        blockHtml.push('<br>\n');
+      } else blockHtml.push(innerBlockMarkup);
       blockHtml.push(`</${blockTag}>`);
-    } else {
-      blockHtml.push('<br/>')
     }
   }
   blockHtml.push('\n');
