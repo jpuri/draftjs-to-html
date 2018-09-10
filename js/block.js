@@ -154,6 +154,8 @@ function getStyleArrayForBlock(block: Object): Object {
     BGCOLOR: new Array(text.length),
     FONTSIZE: new Array(text.length),
     FONTFAMILY: new Array(text.length),
+    LINEHEIGHT: new Array(text.length),
+    LETTERSPACING: new Array(text.length),
     length: text.length,
   };
   if (inlineStyleRanges && inlineStyleRanges.length > 0) {
@@ -169,6 +171,10 @@ function getStyleArrayForBlock(block: Object): Object {
           inlineStyles.FONTSIZE[i] = range.style.substring(9);
         } else if (range.style.indexOf('fontfamily-') === 0) {
           inlineStyles.FONTFAMILY[i] = range.style.substring(11);
+        } else if (range.style.indexOf('lineheight-') === 0) {
+          inlineStyles.LINEHEIGHT[i] = range.style.substring(11);
+        } else if (range.style.indexOf('letterspacing-') === 0) {
+          inlineStyles.LETTERSPACING[i] = range.style.substring(14);
         } else if (inlineStyles[range.style]) {
           inlineStyles[range.style][i] = true;
         }
@@ -194,6 +200,12 @@ export function getStylesAtOffset(inlineStyles: Object, offset: number): Object 
   }
   if (inlineStyles.FONTFAMILY[offset]) {
     styles.FONTFAMILY = inlineStyles.FONTFAMILY[offset];
+  }
+  if (inlineStyles.LINEHEIGHT[offset]) {
+    styles.LINEHEIGHT = inlineStyles.LINEHEIGHT[offset];
+  }
+  if (inlineStyles.LETTERSPACING[offset]) {
+    styles.LETTERSPACING = inlineStyles.LETTERSPACING[offset];
   }
   if (inlineStyles.UNDERLINE[offset]) {
     styles.UNDERLINE = true;
@@ -302,6 +314,12 @@ export function addStylePropertyMarkup(styles: Object, text: string): string {
     }
     if (styles.FONTFAMILY) {
       styleString += `font-family: ${styles.FONTFAMILY};`;
+    }
+    if (styles.LINEHEIGHT) {
+      styleString += `line-height: ${styles.LINEHEIGHT};`;
+    }
+    if (styles.LETTERSPACING) {
+      styleString += `letter-spacing: ${styles.LETTERSPACING};`;
     }
     styleString += '"';
     return `<span ${styleString}>${text}</span>`;
@@ -452,7 +470,7 @@ function getSectionMarkup(
   const entityInlineMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
     block,
-    ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY'],
+    ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY', 'LINEHEIGHT', 'LETTERPSACING'],
     section.start,
     section.end,
   );
