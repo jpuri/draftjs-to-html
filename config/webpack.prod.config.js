@@ -18,10 +18,10 @@ module.exports = {
       }
     }),
     new webpack.optimize.UglifyJsPlugin({
-         compressor: {
-             warnings: false
-         }
-     }),
+      compressor: {
+          warnings: false
+      }
+  }),
   ],
   module: {
     loaders: [{

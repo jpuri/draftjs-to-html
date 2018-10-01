@@ -289,15 +289,27 @@ function getFormattedCharacter(ch) {
 function getSectionText(text: Array<string>): string {
 
   if (text && text.length > 0) {
-    const chars = text.map((ch) => {
+    const chars = text.map((ch, indx) => {
 
-      const formattedCharacter = getFormattedCharacter(ch);
+      let sectionText = '';
 
-      if (formattedCharacter === '<br>\n') {
-        return preWrappedCloseTag.concat(formattedCharacter).concat(preWrappedOpenTag);
+      if (indx === 0) {
+        sectionText = sectionText.concat(preWrappedOpenTag);
       }
 
-      return formattedCharacter;
+      let formattedCharacter = getFormattedCharacter(ch);
+
+      if (formattedCharacter === '<br>\n') {
+        formattedCharacter = preWrappedCloseTag.concat(formattedCharacter).concat(preWrappedOpenTag);
+      }
+
+      sectionText = sectionText.concat(formattedCharacter);
+
+      if (indx === text.length - 1) {
+        sectionText = sectionText.concat(preWrappedCloseTag);
+      }
+
+      return sectionText;
     });
 
     return chars.join('');
@@ -492,7 +504,7 @@ function getSectionMarkup(
     entityInlineMarkup.push(getInlineStyleSectionMarkup(block, styleSection, customColors));
   });
 
-  let sectionText = preWrappedOpenTag.concat(entityInlineMarkup.join('').concat(preWrappedCloseTag));
+  let sectionText = entityInlineMarkup.join('');
 
   if (section.type === 'ENTITY') {
     if (section.entityKey !== undefined && section.entityKey !== null) {
