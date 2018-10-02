@@ -200,7 +200,7 @@ export function getStylesAtOffset(inlineStyles: Object, offset: number): Object 
     styles.FONTFAMILY = inlineStyles.FONTFAMILY[offset];
   }
   if (inlineStyles.UNDERLINE[offset]) {
-    styles.UNDERLINE = 'underline';
+    styles.UNDERLINE = true;
   }
   if (inlineStyles.ITALIC[offset]) {
     styles.ITALIC = true;
@@ -326,7 +326,7 @@ export function addStylePropertyMarkup(styleSection: Object, customColors: Objec
   const { styles, text } = styleSection;
   const content = getSectionText(text);
 
-  if (styles && (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY || styles.UNDERLINE)) {
+  if (styles && (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY)) {
     let styleString = 'style="';
     if (styles.COLOR) {
       let fontColor = customColors[styles.COLOR]
@@ -341,9 +341,6 @@ export function addStylePropertyMarkup(styleSection: Object, customColors: Objec
     }
     if (styles.FONTFAMILY) {
       styleString += `font-family: ${styles.FONTFAMILY};`;
-    }
-    if (styles.UNDERLINE){
-      styleString += `text-decoration: ${styles.UNDERLINE};`;
     }
     styleString += '"';
     return `<span ${styleString}>${content}</span>`;
@@ -471,7 +468,7 @@ like color, background-color, font-size are applicable.
 */
 function getInlineStyleSectionMarkup(block: Object, styleSection: Object, customColors: Object): string {
   const stylePropertySections = getInlineStyleSections(
-    block, ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY', 'UNDERLINE'], styleSection.start, styleSection.end,
+    block, ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY'], styleSection.start, styleSection.end,
   );
   let styleSectionText = '';
   stylePropertySections.forEach((stylePropertySection) => {
@@ -496,7 +493,7 @@ function getSectionMarkup(
   const entityInlineMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
     block,
-    ['BOLD', 'ITALIC', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'],
+    ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'],
     section.start,
     section.end,
   );
