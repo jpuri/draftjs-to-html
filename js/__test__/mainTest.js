@@ -115,4 +115,19 @@ describe('draftToHtml test suite', () => {
     result = draftToHtml(convertToRaw(contentState));
     assert.equal(html, result);
   });
+
+  it('should return correct result for emoji', () => {
+    let html = '<p>🤔<strong>testing🤔</strong>🤔</p>\n';
+    let arrContentBlocks = convertFromHTML(html);
+    let contentState = ContentState.createFromBlockArray(arrContentBlocks);
+    let result = draftToHtml(convertToRaw(contentState));
+    assert.equal(html, result);
+
+    html = '<ol><li>🤔<strong>testing🤔</strong>🤔</li>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n</ol>\n';
+    let output = '<ol>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n</ol>\n';
+    arrContentBlocks = convertFromHTML(html);
+    contentState = ContentState.createFromBlockArray(arrContentBlocks);
+    result = draftToHtml(convertToRaw(contentState));
+    assert.equal(output, result);
+  });
 });
