@@ -52,5 +52,8 @@
       "webpack": false,
       "limit": "4.5 KB"
     }
-  ]
+  ],
+  "dependencies": {
+    "emoji-regex": "^7.0.1"
+  }
 }

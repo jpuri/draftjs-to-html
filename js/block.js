@@ -1,3 +1,5 @@
+import emojiRegex from 'emoji-regex';
+
 import { forEach, isEmptyString } from './common';
 
 /**
@@ -356,16 +358,37 @@ function getInlineStyleSections(
   if (text.length > 0) {
     const inlineStyles = getStyleArrayForBlock(block);
     let section;
+
+    const regex = emojiRegex();
+    const emojiIndex = {};
+    var emojiOffset = 0;
+    var result;
+
+    while (result = regex.exec(text)) {
+      const emoji = result[0];
+
+      emojiIndex[text.indexOf(emoji)] = emoji;
+    }
+
     for (let i = start; i < end; i += 1) {
+      const indexOffset = i + emojiOffset;
+      const textChar = [text[indexOffset]];
+      const emoji = emojiIndex[indexOffset];
+
+      if (emoji) {
+        textChar.push(...emoji.slice(1));
+        emojiOffset = emojiOffset + emoji.length - 1;
+      }
+
       if (i !== start && sameStyleAsPrevious(inlineStyles, styles, i)) {
-        section.text.push(text[i]);
-        section.end = i + 1;
+        section.text.push(...textChar);
+        section.end = indexOffset + 1;
       } else {
         section = {
           styles: getStylesAtOffset(inlineStyles, i),
-          text: [text[i]],
-          start: i,
-          end: i + 1,
+          text: textChar,
+          start: indexOffset,
+          end: indexOffset + 1,
         };
         styleSections.push(section);
       }
