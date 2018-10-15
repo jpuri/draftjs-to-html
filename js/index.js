@@ -7,7 +7,6 @@ import { isList, getListMarkup } from './list';
 
 // This code is `num lock`, and this code is not used in `string` normally.
 const mockEmoji = String.fromCharCode(144);
-const regex = emojiRegex();
 
 /**
 * This function will replace mockEmoji with real emoji.
@@ -42,7 +41,7 @@ export default function draftToHtml(
         const emojiList = [];
         let emojiMatch;
 
-        while (emojiMatch = regex.exec(block.text)) {
+        while (emojiMatch = emojiRegex().exec(block.text)) {
           const emoji = emojiMatch[0];
 
           block.text = block.text.replace(emoji, mockEmoji);

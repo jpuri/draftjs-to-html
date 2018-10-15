@@ -117,14 +117,21 @@ describe('draftToHtml test suite', () => {
   });
 
   it('should return correct result for emoji', () => {
-    let html = '<p>🤔<strong>testing🤔</strong>🤔</p>\n';
+    let html = '<p>🤔<strong>testing🤔</strong>🤔🤔</p>\n';
     let arrContentBlocks = convertFromHTML(html);
     let contentState = ContentState.createFromBlockArray(arrContentBlocks);
     let result = draftToHtml(convertToRaw(contentState));
     assert.equal(html, result);
 
+    html = '<p>testing<a href="http://example.com">🤔🤔</a></p>\n';
+    let output = '<p>testing<a href="http://example.com/" target="_self">🤔🤔</a></p>\n';
+    arrContentBlocks = convertFromHTML(html);
+    contentState = ContentState.createFromBlockArray(arrContentBlocks);
+    result = draftToHtml(convertToRaw(contentState));
+    assert.equal(output, result);
+
     html = '<ol><li>🤔<strong>testing🤔</strong>🤔</li>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n</ol>\n';
-    let output = '<ol>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n</ol>\n';
+    output = '<ol>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n<li>🤔<strong>testing🤔</strong>🤔</li>\n</ol>\n';
     arrContentBlocks = convertFromHTML(html);
     contentState = ContentState.createFromBlockArray(arrContentBlocks);
     result = draftToHtml(convertToRaw(contentState));
