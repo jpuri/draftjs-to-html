@@ -115,4 +115,12 @@ describe('draftToHtml test suite', () => {
     result = draftToHtml(convertToRaw(contentState));
     assert.equal(html, result);
   });
+
+  it('should return correct result when there are emojis', () => {
+    const html = '<p><strong>👈</strong>👈</p>\n';
+    const arrContentBlocks = convertFromHTML(html);
+    const contentState = ContentState.createFromBlockArray(arrContentBlocks);
+    const result = draftToHtml(convertToRaw(contentState));
+    assert.equal(html, result);
+  });
 });

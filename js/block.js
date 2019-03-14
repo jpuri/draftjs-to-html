@@ -352,7 +352,7 @@ function getInlineStyleSections(
   end: number,
 ): Array<Object> {
   const styleSections = [];
-  const { text } = block;
+  const text = Array.from(block.text)
   if (text.length > 0) {
     const inlineStyles = getStyleArrayForBlock(block);
     let section;
