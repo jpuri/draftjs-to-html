@@ -146,7 +146,7 @@ describe('addStylePropertyMarkup test suite', () => {
         FONTSIZE: 10,
         FONTFAMILY: 'Arial',
       },
-      'test'
+      'test',
     );
     assert.equal(
       markup,
