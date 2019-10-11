@@ -2345,8 +2345,8 @@ express@^4.16.2:
     vary "~1.1.2"
 
 extend@~3.0.0, extend@~3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.1.tgz#a755ea7bc1adfcc5a31ce7e762dbaadc5e636444"
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
 
 external-editor@^2.0.4:
   version "2.1.0"
@@ -4800,7 +4800,7 @@ sinon@^4.1.4:
     supports-color "^4.4.0"
     type-detect "^4.0.5"
 
-size-limit@0.14.1:
+size-limit@^0.14.1:
   version "0.14.1"
   resolved "https://registry.yarnpkg.com/size-limit/-/size-limit-0.14.1.tgz#579b4657f394437ab6addd2b9da1afe566bcd7bf"
   dependencies:
