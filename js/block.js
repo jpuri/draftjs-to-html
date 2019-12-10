@@ -332,11 +332,11 @@ function getEntityMarkup(
     return `<a href="${entity.data.url}" target="${targetOption}">${text}</a>`;
   }
   if (entity.type === 'IMAGE') {
-    let { alignment } = entity.data;
-    if (!alignment || alignment === 'none') {
-      alignment = 'center';
+    const { alignment } = entity.data;
+    if (alignment && alignment.length) {
+      return `<div style="text-align:${alignment};"><img src="${entity.data.src}" alt="${entity.data.alt}" style="height: ${entity.data.height};width: ${entity.data.width}"/></div>`;
     }
-    return `<div style="text-align:${alignment};"><img src="${entity.data.src}" alt="${entity.data.alt}" style="height: ${entity.data.height};width: ${entity.data.width}"/></div>`;
+    return `<img src="${entity.data.src}" alt="${entity.data.alt}" style="height: ${entity.data.height};width: ${entity.data.width}"/>`;
   }
   if (entity.type === 'EMBEDDED_LINK') {
     return `<iframe width="${entity.data.width}" height="${entity.data.height}" src="${entity.data.src}" frameBorder="0"></iframe>`;
@@ -355,7 +355,7 @@ function getInlineStyleSections(
   end,
 ) {
   const styleSections = [];
-  const text = Array.from(block.text)
+  const text = Array.from(block.text);
   if (text.length > 0) {
     const inlineStyles = getStyleArrayForBlock(block);
     let section;
