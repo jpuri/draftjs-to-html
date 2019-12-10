@@ -39,17 +39,17 @@ describe('draftToHtml test suite', () => {
     assert.equal(output, result);
 
     html = '<ol><li>1</li>\n<ol><li>2</li>\n<li>3</li>\n</ol>\n<li>4</li>\n</ol>\n';
-    output = '<ol>\n<li>1</li>\n<ol>\n<li>2</li>\n<li>' +
-      '3</li>\n</ol>\n<li>4</li>\n</ol>\n';
+    output = '<ol>\n<li>1</li>\n<ol>\n<li>2</li>\n<li>'
+      + '3</li>\n</ol>\n<li>4</li>\n</ol>\n';
     arrContentBlocks = convertFromHTML(html);
     contentState = ContentState.createFromBlockArray(arrContentBlocks);
     result = draftToHtml(convertToRaw(contentState));
     assert.equal(output, result);
 
-    html = '<ol><li>1</li>\n<ol><li>2</li>\n<ol><li>3</li>\n</ol>' +
-      '\n</ol>\n<li>3</li>\n</ol>\n';
-    output = '<ol>\n<li>1</li>\n<ol>\n<li>2</li>\n<ol>\n<li>3' +
-      '</li>\n</ol>\n</ol>\n<li>3</li>\n</ol>\n';
+    html = '<ol><li>1</li>\n<ol><li>2</li>\n<ol><li>3</li>\n</ol>'
+      + '\n</ol>\n<li>3</li>\n</ol>\n';
+    output = '<ol>\n<li>1</li>\n<ol>\n<li>2</li>\n<ol>\n<li>3'
+      + '</li>\n</ol>\n</ol>\n<li>3</li>\n</ol>\n';
     arrContentBlocks = convertFromHTML(html);
     contentState = ContentState.createFromBlockArray(arrContentBlocks);
     result = draftToHtml(convertToRaw(contentState));
@@ -79,17 +79,17 @@ describe('draftToHtml test suite', () => {
     assert.equal(output, result);
 
     html = '<ol><li>1</li>\n<ol><li>2</li>\n<li>3</li>\n</ol>\n<li>4</li>\n</ol>\n';
-    output = '<ol>\n<li>1</li>\n<ol>\n<li>2</li>\n<li>3' +
-      '</li>\n</ol>\n<li>4</li>\n</ol>\n';
+    output = '<ol>\n<li>1</li>\n<ol>\n<li>2</li>\n<li>3'
+      + '</li>\n</ol>\n<li>4</li>\n</ol>\n';
     arrContentBlocks = convertFromHTML(html);
     contentState = ContentState.createFromBlockArray(arrContentBlocks);
     result = draftToHtml(convertToRaw(contentState));
     assert.equal(output, result);
 
-    html = '<ol><li>1</li>\n<ol><li>2</li>\n<ol><li>3</li>\n</ol>' +
-      '\n</ol>\n<li>3</li>\n</ol>\n';
-    output = '<ol>\n<li>1</li>\n<ol>\n<li>2</li>\n<ol>\n<li>3' +
-      '</li>\n</ol>\n</ol>\n<li>3</li>\n</ol>\n';
+    html = '<ol><li>1</li>\n<ol><li>2</li>\n<ol><li>3</li>\n</ol>'
+      + '\n</ol>\n<li>3</li>\n</ol>\n';
+    output = '<ol>\n<li>1</li>\n<ol>\n<li>2</li>\n<ol>\n<li>3'
+      + '</li>\n</ol>\n</ol>\n<li>3</li>\n</ol>\n';
     arrContentBlocks = convertFromHTML(html);
     contentState = ContentState.createFromBlockArray(arrContentBlocks);
     result = draftToHtml(convertToRaw(contentState));

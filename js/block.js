@@ -3,7 +3,7 @@ import { forEach, isEmptyString } from './common';
 /**
 * Mapping block-type to corresponding html tag.
 */
-const blockTypesMapping: Object = {
+const blockTypesMapping = {
   unstyled: 'p',
   'header-one': 'h1',
   'header-two': 'h2',
@@ -20,14 +20,14 @@ const blockTypesMapping: Object = {
 /**
 * Function will return HTML tag for a block.
 */
-export function getBlockTag(type: string): string {
+export function getBlockTag(type) {
   return type && blockTypesMapping[type];
 }
 
 /**
 * Function will return style string for a block.
 */
-export function getBlockStyle(data: Object): string {
+export function getBlockStyle(data) {
   let styles = '';
   forEach(data, (key, value) => {
     if (value) {
@@ -41,7 +41,7 @@ export function getBlockStyle(data: Object): string {
 * The function returns an array of hashtag-sections in blocks.
 * These will be areas in block which have hashtags applicable to them.
 */
-function getHashtagRanges(blockText: string, hashtagConfig: Object): Array<Object> {
+function getHashtagRanges(blockText, hashtagConfig) {
   const sections = [];
   if (hashtagConfig) {
     let counter = 0;
@@ -62,10 +62,9 @@ function getHashtagRanges(blockText: string, hashtagConfig: Object): Array<Objec
         }
       }
       if (startIndex >= 0) {
-        const endIndex =
-          text.indexOf(separator) >= 0
-            ? text.indexOf(separator)
-            : text.length;
+        const endIndex = text.indexOf(separator) >= 0
+          ? text.indexOf(separator)
+          : text.length;
         const hashtag = text.substr(0, endIndex);
         if (hashtag && hashtag.length > 0) {
           sections.push({
@@ -86,9 +85,9 @@ function getHashtagRanges(blockText: string, hashtagConfig: Object): Array<Objec
 * These will be areas in block which have same entity or no entity applicable to them.
 */
 function getSections(
-  block: Object,
-  hashtagConfig: Object,
-): Array<Object> {
+  block,
+  hashtagConfig,
+) {
   const sections = [];
   let lastOffset = 0;
   let sectionRanges = block.entityRanges.map((range) => {
@@ -129,9 +128,9 @@ function getSections(
 /**
 * Function to check if the block is an atomic entity block.
 */
-function isAtomicEntityBlock(block: Object): boolean {
-  if (block.entityRanges.length > 0 && (isEmptyString(block.text) ||
-    block.type === 'atomic')) {
+function isAtomicEntityBlock(block) {
+  if (block.entityRanges.length > 0 && (isEmptyString(block.text)
+    || block.type === 'atomic')) {
     return true;
   }
   return false;
@@ -140,7 +139,7 @@ function isAtomicEntityBlock(block: Object): boolean {
 /**
 * The function will return array of inline styles applicable to the block.
 */
-function getStyleArrayForBlock(block: Object): Object {
+function getStyleArrayForBlock(block) {
   const { text, inlineStyleRanges } = block;
   const inlineStyles = {
     BOLD: new Array(text.length),
@@ -181,7 +180,7 @@ function getStyleArrayForBlock(block: Object): Object {
 /**
 * The function will return inline style applicable at some offset within a block.
 */
-export function getStylesAtOffset(inlineStyles: Object, offset: number): Object {
+export function getStylesAtOffset(inlineStyles, offset) {
   const styles = {};
   if (inlineStyles.COLOR[offset]) {
     styles.COLOR = inlineStyles.COLOR[offset];
@@ -224,10 +223,10 @@ export function getStylesAtOffset(inlineStyles: Object, offset: number): Object 
 * are same as that on the previous offset.
 */
 export function sameStyleAsPrevious(
-  inlineStyles: Object,
-  styles: Array<string>,
-  index: number,
-): boolean {
+  inlineStyles,
+  styles,
+  index,
+) {
   let sameStyled = true;
   if (index > 0 && index < inlineStyles.length) {
     styles.forEach((style) => {
@@ -242,20 +241,20 @@ export function sameStyleAsPrevious(
 /**
 * Function returns html for text depending on inline style tags applicable to it.
 */
-export function addInlineStyleMarkup(style: string, content: string): string {
+export function addInlineStyleMarkup(style, content) {
   if (style === 'BOLD') {
     return `<strong>${content}</strong>`;
-  } else if (style === 'ITALIC') {
+  } if (style === 'ITALIC') {
     return `<em>${content}</em>`;
-  } else if (style === 'UNDERLINE') {
+  } if (style === 'UNDERLINE') {
     return `<ins>${content}</ins>`;
-  } else if (style === 'STRIKETHROUGH') {
+  } if (style === 'STRIKETHROUGH') {
     return `<del>${content}</del>`;
-  } else if (style === 'CODE') {
+  } if (style === 'CODE') {
     return `<code>${content}</code>`;
-  } else if (style === 'SUPERSCRIPT') {
+  } if (style === 'SUPERSCRIPT') {
     return `<sup>${content}</sup>`;
-  } else if (style === 'SUBSCRIPT') {
+  } if (style === 'SUBSCRIPT') {
     return `<sub>${content}</sub>`;
   }
   return content;
@@ -264,7 +263,7 @@ export function addInlineStyleMarkup(style: string, content: string): string {
 /**
 * The function returns text for given section of block after doing required character replacements.
 */
-function getSectionText(text: Array<string>): string {
+function getSectionText(text) {
   if (text && text.length > 0) {
     const chars = text.map((ch) => {
       switch (ch) {
@@ -288,7 +287,7 @@ function getSectionText(text: Array<string>): string {
 /**
 * Function returns html for text depending on inline style tags applicable to it.
 */
-export function addStylePropertyMarkup(styles: Object, text: string): string {
+export function addStylePropertyMarkup(styles, text) {
   if (styles && (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY)) {
     let styleString = 'style="';
     if (styles.COLOR) {
@@ -313,11 +312,11 @@ export function addStylePropertyMarkup(styles: Object, text: string): string {
 * Function will return markup for Entity.
 */
 function getEntityMarkup(
-  entityMap: Object,
-  entityKey: number,
-  text: string,
-  customEntityTransform: Function,
-): string {
+  entityMap,
+  entityKey,
+  text,
+  customEntityTransform,
+) {
   const entity = entityMap[entityKey];
   if (typeof customEntityTransform === 'function') {
     const html = customEntityTransform(entity, text);
@@ -346,11 +345,11 @@ function getEntityMarkup(
 * with similar inline styles applicable to them.
 */
 function getInlineStyleSections(
-  block: Object,
-  styles: Array<string>,
-  start: number,
-  end: number,
-): Array<Object> {
+  block,
+  styles,
+  start,
+  end,
+) {
   const styleSections = [];
   const { text } = block;
   if (text.length > 0) {
@@ -377,7 +376,7 @@ function getInlineStyleSections(
 /**
 * Replace leading blank spaces by &nbsp;
 */
-export function trimLeadingZeros(sectionText: string): string {
+export function trimLeadingZeros(sectionText) {
   if (sectionText) {
     let replacedText = sectionText;
     for (let i = 0; i < replacedText.length; i += 1) {
@@ -395,7 +394,7 @@ export function trimLeadingZeros(sectionText: string): string {
 /**
 * Replace trailing blank spaces by &nbsp;
 */
-export function trimTrailingZeros(sectionText: string): string {
+export function trimTrailingZeros(sectionText) {
   if (sectionText) {
     let replacedText = sectionText;
     for (let i = replacedText.length - 1; i >= 0; i -= 1) {
@@ -414,7 +413,7 @@ export function trimTrailingZeros(sectionText: string): string {
 * The method returns markup for section to which inline styles
 * like BOLD, ITALIC, UNDERLINE, STRIKETHROUGH, CODE, SUPERSCRIPT, SUBSCRIPT are applicable.
 */
-function getStyleTagSectionMarkup(styleSection: Object): string {
+function getStyleTagSectionMarkup(styleSection) {
   const { styles, text } = styleSection;
   let content = getSectionText(text);
   forEach(styles, (style, value) => {
@@ -428,7 +427,7 @@ function getStyleTagSectionMarkup(styleSection: Object): string {
 * The method returns markup for section to which inline styles
 like color, background-color, font-size are applicable.
 */
-function getInlineStyleSectionMarkup(block: Object, styleSection: Object): string {
+function getInlineStyleSectionMarkup(block, styleSection) {
   const styleTagSections = getInlineStyleSections(block, ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'], styleSection.start, styleSection.end);
   let styleSectionText = '';
   styleTagSections.forEach((stylePropertySection) => {
@@ -444,11 +443,11 @@ function getInlineStyleSectionMarkup(block: Object, styleSection: Object): strin
 * to which same entity or no entity is applicable.
 */
 function getSectionMarkup(
-  block: Object,
-  entityMap: Object,
-  section: Object,
-  customEntityTransform: Function,
-): string {
+  block,
+  entityMap,
+  section,
+  customEntityTransform,
+) {
   const entityInlineMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
     block,
@@ -475,16 +474,15 @@ function getSectionMarkup(
 * special characters like newlines or blank spaces.
 */
 export function getBlockInnerMarkup(
-  block: Object,
-  entityMap: Object,
-  hashtagConfig: Object,
-  customEntityTransform: Function,
-): string {
+  block,
+  entityMap,
+  hashtagConfig,
+  customEntityTransform,
+) {
   const blockMarkup = [];
   const sections = getSections(block, hashtagConfig);
   sections.forEach((section, index) => {
-    let sectionText =
-      getSectionMarkup(block, entityMap, section, customEntityTransform);
+    let sectionText = getSectionMarkup(block, entityMap, section, customEntityTransform);
     if (index === 0) {
       sectionText = trimLeadingZeros(sectionText);
     }
@@ -500,12 +498,12 @@ export function getBlockInnerMarkup(
 * Function will return html for the block.
 */
 export function getBlockMarkup(
-  block: Object,
-  entityMap: Object,
-  hashtagConfig: Object,
-  directional: boolean,
-  customEntityTransform: Function,
-): string {
+  block,
+  entityMap,
+  hashtagConfig,
+  directional,
+  customEntityTransform,
+) {
   const blockHtml = [];
   if (isAtomicEntityBlock(block)) {
     blockHtml.push(getEntityMarkup(
