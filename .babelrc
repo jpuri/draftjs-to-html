@@ -1,24 +1,4 @@
 {
-  "env": {
-    "test": {
-      "presets": [
-        "env",
-        "react",
-        "stage-0"
-      ]
-    },
-    "development": {
-      "presets": [
-        [
-          "env",
-          {
-            "modules": false
-          }
-        ],
-        "react",
-        "stage-0"
-      ]
-    }
-  },
-  "plugins": ["transform-flow-strip-types"]
+  "presets": ["@babel/preset-env"],
+  "plugins": [["transform-flow-strip-types"]]
 }

@@ -10,7 +10,7 @@ This is draft to HTML library I wrote for one of my projects. I am open-sourcing
 
 ## Usage
 
-```
+```js
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 
@@ -28,7 +28,7 @@ The function parameters are:
 1. **contentState**: Its instance of  [RawDraftContentState](https://facebook.github.io/draft-js/docs/api-reference-data-conversion.html#content)
 
 2. **hashConfig**: Its configuration object for hashtag, its required only if hashtags are used. If the object is not defined hashtags will be output as simple text in the markdown.
-    ```
+    ```js
     hashConfig = {
       trigger: '#',
       separator: ' ',

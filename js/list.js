@@ -7,10 +7,10 @@ import {
 /**
 * Function to check if a block is of type list.
 */
-export function isList(blockType: string): any {
+export function isList(blockType) {
   return (
-    blockType === 'unordered-list-item' ||
-    blockType === 'ordered-list-item'
+    blockType === 'unordered-list-item'
+    || blockType === 'ordered-list-item'
   );
 }
 
@@ -18,12 +18,12 @@ export function isList(blockType: string): any {
 * Function will return html markup for a list block.
 */
 export function getListMarkup(
-  listBlocks: Array<Object>,
-  entityMap: Object,
-  hashtagConfig: Object,
-  directional: boolean,
-  customEntityTransform: Function,
-): string {
+  listBlocks,
+  entityMap,
+  hashtagConfig,
+  directional,
+  customEntityTransform,
+) {
   const listHtml = [];
   let nestedListBlock = [];
   let previousBlock;

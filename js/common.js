@@ -3,7 +3,7 @@
 /**
 * Utility function to execute callback for eack key->value pair.
 */
-export function forEach(obj: Object, callback: Function) {
+export function forEach(obj, callback) {
   if (obj) {
     for (const key in obj) { // eslint-disable-line no-restricted-syntax
       if ({}.hasOwnProperty.call(obj, key)) {
@@ -16,7 +16,7 @@ export function forEach(obj: Object, callback: Function) {
 /**
 * The function returns true if the string passed to it has no content.
 */
-export function isEmptyString(str: string): boolean {
+export function isEmptyString(str) {
   if (str === undefined || str === null || str.length === 0 || str.trim().length === 0) {
     return true;
   }

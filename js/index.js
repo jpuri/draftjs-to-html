@@ -7,11 +7,11 @@ import { isList, getListMarkup } from './list';
 * The function will generate html markup for given draftjs editorContent.
 */
 export default function draftToHtml(
-  editorContent: Object,
-  hashtagConfig: Object,
-  directional: boolean,
-  customEntityTransform: Function,
-): string {
+  editorContent,
+  hashtagConfig,
+  directional,
+  customEntityTransform,
+) {
   const html = [];
   if (editorContent) {
     const { blocks, entityMap } = editorContent;
