@@ -54,6 +54,13 @@ describe('draftToHtml test suite', () => {
     contentState = ContentState.createFromBlockArray(arrContentBlocks);
     result = draftToHtml(convertToRaw(contentState));
     assert.equal(output, result);
+
+    html = '<ul>\n<li>1</li>\n<ul>\n<li>2</li>\n</ul>\n</ul>\n<ol>\n<li>3</li>\n<li>4</li>\n</ol>\n';
+    output = '<ul>\n<li>1</li>\n<ul>\n<li>2</li>\n</ul>\n</ul>\n<ol>\n<li>3</li>\n<li>4</li>\n</ol>\n';
+    arrContentBlocks = convertFromHTML(html);
+    contentState = ContentState.createFromBlockArray(arrContentBlocks);
+    result = draftToHtml(convertToRaw(contentState));
+    assert.equal(output, result);
   });
 
   it('should return correct result for inline styles color', () => {

@@ -32,6 +32,19 @@ export function getListMarkup(
     if (!previousBlock) {
       listHtml.push(`<${getBlockTag(block.type)}>\n`);
     } else if (previousBlock.type !== block.type) {
+      if (nestedListBlock && nestedListBlock.length > 0) {
+        listHtml.push(
+          getListMarkup(
+            nestedListBlock,
+            entityMap,
+            hashtagConfig,
+            directional,
+            customEntityTransform,
+          ),
+        );
+        nestedListBlock = [];
+      }
+
       listHtml.push(`</${getBlockTag(previousBlock.type)}>\n`);
       listHtml.push(`<${getBlockTag(block.type)}>\n`);
     } else if (previousBlock.depth === block.depth) {
