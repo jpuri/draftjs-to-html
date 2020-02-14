@@ -114,6 +114,12 @@ describe('draftToHtml test suite', () => {
     contentState = ContentState.createFromBlockArray(arrContentBlocks);
     result = draftToHtml(convertToRaw(contentState));
     assert.equal(html, result);
+
+    html = '<pre>testing</pre>\n';
+    arrContentBlocks = convertFromHTML(html);
+    contentState = ContentState.createFromBlockArray(arrContentBlocks);
+    result = draftToHtml(convertToRaw(contentState));
+    assert.equal(html, result);
   });
 
   it('should return correct result when there are emojis', () => {
