@@ -44,7 +44,7 @@ export default function draftToHtml(
     }
   }
   const cleanedHtml = html.map((htmlBlock) =>
-		htmlBlock === "<p></p>\n" ? "<br/>\n" : htmlBlock
+		htmlBlock === "<p></p>\n" ? "<br>\n" : htmlBlock
 	);
 	return cleanedHtml.join("");
 }
