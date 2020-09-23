@@ -1,6 +1,6 @@
 {
   "name": "draftjs-to-html-with-path-support",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "A library for draftjs to html conversion.",
   "main": "lib/draftjs-to-html.js",
   "devDependencies": {
