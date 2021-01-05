@@ -43,5 +43,14 @@ export default function draftToHtml(
       }
     }
   }
-  return html.join('');
+
+  const cleanedHtml = html.map((htmlBlock) => {
+    console.log(htmlBlock);
+
+    if (htmlBlock === '<h1></h1>' || htmlBlock === '<h2></h2>' || htmlBlock === '<h3></h3>' || htmlBlock === '<h4></h4>') return '<br>';
+
+    return htmlBlock;
+  });
+
+  return cleanedHtml.join('');
 }
