@@ -2,6 +2,8 @@ import { forEach, isEmptyString } from './common';
 
 /**
 * Mapping block-type to corresponding html tag.
+ *
+ * CK: Added Perspective Sizes
 */
 const blockTypesMapping = {
   unstyled: 'p',
@@ -13,6 +15,10 @@ const blockTypesMapping = {
   'header-six': 'h6',
   'unordered-list-item': 'ul',
   'ordered-list-item': 'ol',
+  SIZE_S: 'h4',
+  SIZE_M: 'h3',
+  SIZE_L: 'h2',
+  SIZE_XL: 'h1',
   blockquote: 'blockquote',
   code: 'pre',
 };
