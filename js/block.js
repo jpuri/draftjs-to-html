@@ -15,6 +15,7 @@ const blockTypesMapping = {
   'header-six': 'h6',
   'unordered-list-item': 'ul',
   'ordered-list-item': 'ol',
+  SIZE_CHECKBOX: 'h5',
   SIZE_S: 'h4',
   SIZE_M: 'h3',
   SIZE_L: 'h2',
