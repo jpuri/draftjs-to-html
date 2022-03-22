@@ -81,7 +81,7 @@ Following is the list of conversions it supports:
 
 7. Converts atomic entity image to image tag using entity data src for image source, and if present alt, alignment, height, width also: `<img src="src" alt="alt_text" style="float: left, height: 50px; width: 50px"/>`.
 
-8. Converts embedded links to iFrames, using width, height and src from entity data. `<iframe width="width" height="height" src="src" frameBorder="0"></iframe>`
+8. Converts embedded links to iFrames, using width, height and src from entity data. `<iframe width="width" height="height" src="src" frameBorder="0" allowfullscreen></iframe>`
 
 9. Converts hashtags to anchor tag: `<a href="#tag" class="wysiwyg-hashtag">#tag</a>`.
 
