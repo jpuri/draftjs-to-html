@@ -70,7 +70,7 @@ Following is the list of conversions it supports:
 
 2. Converts ordered and unordered list blocks with depths to nested structure of `<ul>, <ol>` and `<li>`.
 
-3. Converts inline styles BOLD, ITALIC, UNDERLINE, STRIKETHROUGH, CODE, SUPERSCRIPT, SUBSCRIPT to corresponding HTML tags: `<strong>, <em>, <ins>, <code>, <sup>, <sub>`.
+3. Converts inline styles BOLD, ITALIC, UNDERLINE, STRIKETHROUGH, CODE, SUPERSCRIPT, SUBSCRIPT to corresponding HTML tags: `<strong>, <em>, <u>, <code>, <sup>, <sub>`.
 
 4. Converts inline styles color, background-color, font-size, font-family to a span tag with inline style details:
 `<span style="color:xyz;font-size:xx">`. (The inline styles in JSON object should start with strings `color` or `font-size` like `color-red`, `color-green` or `fontsize-12`, `fontsize-20`).

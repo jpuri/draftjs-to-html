@@ -130,7 +130,7 @@ describe('addInlineStyleMarkup test suite', () => {
   markup = addInlineStyleMarkup('ITALIC', 'test');
   assert.equal(markup, '<em>test</em>');
   markup = addInlineStyleMarkup('UNDERLINE', 'test');
-  assert.equal(markup, '<ins>test</ins>');
+  assert.equal(markup, '<u>test</u>');
   markup = addInlineStyleMarkup('STRIKETHROUGH', 'test');
   assert.equal(markup, '<del>test</del>');
   markup = addInlineStyleMarkup('CODE', 'test');
