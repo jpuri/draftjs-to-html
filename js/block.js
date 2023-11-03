@@ -157,6 +157,7 @@ function getStyleArrayForBlock(block: Object): Object {
     BGCOLOR: new Array(text.length),
     FONTSIZE: new Array(text.length),
     FONTFAMILY: new Array(text.length),
+    UPPERCASE: new Array(text.length),
     length: text.length,
   };
   if (inlineStyleRanges && inlineStyleRanges.length > 0) {
@@ -164,13 +165,13 @@ function getStyleArrayForBlock(block: Object): Object {
       const offset = range.offset;
       const length = offset + range.length;
       for (let i = offset; i < length; i += 1) {
-        if (range.style.indexOf('color-') === 0) {
+        if (range.style.indexOf("color-") === 0) {
           inlineStyles.COLOR[i] = range.style.substring(6);
-        } else if (range.style.indexOf('bgcolor-') === 0) {
+        } else if (range.style.indexOf("bgcolor-") === 0) {
           inlineStyles.BGCOLOR[i] = range.style.substring(8);
-        } else if (range.style.indexOf('fontsize-') === 0) {
+        } else if (range.style.indexOf("fontsize-") === 0) {
           inlineStyles.FONTSIZE[i] = range.style.substring(9);
-        } else if (range.style.indexOf('fontfamily-') === 0) {
+        } else if (range.style.indexOf("fontfamily-") === 0) {
           inlineStyles.FONTFAMILY[i] = range.style.substring(11);
         } else if (inlineStyles[range.style]) {
           inlineStyles[range.style][i] = true;
@@ -183,9 +184,12 @@ function getStyleArrayForBlock(block: Object): Object {
 }
 
 /**
-* The function will return inline style applicable at some offset within a block.
-*/
-export function getStylesAtOffset(inlineStyles: Object, offset: number): Object {
+ * The function will return inline style applicable at some offset within a block.
+ */
+export function getStylesAtOffset(
+  inlineStyles: Object,
+  offset: number
+): Object {
   const styles = {};
   if (inlineStyles.COLOR[offset]) {
     styles.COLOR = inlineStyles.COLOR[offset];
@@ -220,22 +224,27 @@ export function getStylesAtOffset(inlineStyles: Object, offset: number): Object 
   if (inlineStyles.SUPERSCRIPT[offset]) {
     styles.SUPERSCRIPT = true;
   }
+  if (inlineStyles.UPPERCASE[offset]) {
+    styles.UPPERCASE = "uppercase";
+  }
   return styles;
 }
 
 /**
-* Function returns true for a set of styles if the value of these styles at an offset
-* are same as that on the previous offset.
-*/
+ * Function returns true for a set of styles if the value of these styles at an offset
+ * are same as that on the previous offset.
+ */
 export function sameStyleAsPrevious(
   inlineStyles: Object,
   styles: Array<string>,
-  index: number,
+  index: number
 ): boolean {
   let sameStyled = true;
   if (index > 0 && index < inlineStyles.length) {
     styles.forEach((style) => {
-      sameStyled = sameStyled && inlineStyles[style][index] === inlineStyles[style][index - 1];
+      sameStyled =
+        sameStyled &&
+        inlineStyles[style][index] === inlineStyles[style][index - 1];
     });
   } else {
     sameStyled = false;
@@ -244,22 +253,22 @@ export function sameStyleAsPrevious(
 }
 
 /**
-* Function returns html for text depending on inline style tags applicable to it.
-*/
+ * Function returns html for text depending on inline style tags applicable to it.
+ */
 export function addInlineStyleMarkup(style: string, content: string): string {
-  if (style === 'BOLD') {
+  if (style === "BOLD") {
     return `<strong>${content}</strong>`;
-  } else if (style === 'ITALIC') {
+  } else if (style === "ITALIC") {
     return `<em>${content}</em>`;
-  } else if (style === 'UNDERLINE') {
+  } else if (style === "UNDERLINE") {
     return `<ins>${content}</ins>`;
-  } else if (style === 'STRIKETHROUGH') {
+  } else if (style === "STRIKETHROUGH") {
     return `<del>${content}</del>`;
-  } else if (style === 'CODE') {
+  } else if (style === "CODE") {
     return `<code>${content}</code>`;
-  } else if (style === 'SUPERSCRIPT') {
+  } else if (style === "SUPERSCRIPT") {
     return `<sup>${content}</sup>`;
-  } else if (style === 'SUBSCRIPT') {
+  } else if (style === "SUBSCRIPT") {
     return `<sub>${content}</sub>`;
   }
   return content;
@@ -270,28 +279,26 @@ export function addInlineStyleMarkup(style: string, content: string): string {
  */
 function getFormattedCharacter(ch) {
   switch (ch) {
-    case '\n':
-      return '<br>\n';
-    case '&':
-      return '&amp;';
-    case '<':
-      return '&lt;';
-    case '>':
-      return '&gt;';
+    case "\n":
+      return "<br>\n";
+    case "&":
+      return "&amp;";
+    case "<":
+      return "&lt;";
+    case ">":
+      return "&gt;";
     default:
       return ch;
   }
 }
 
 /**
-* The function returns text for given section of block after doing required character replacements.
-*/
+ * The function returns text for given section of block after doing required character replacements.
+ */
 function getSectionText(text: Array<string>): string {
-
   if (text && text.length > 0) {
     const chars = text.map((ch, indx) => {
-
-      let sectionText = '';
+      let sectionText = "";
 
       if (indx === 0) {
         sectionText = sectionText.concat(preWrappedOpenTag);
@@ -299,8 +306,10 @@ function getSectionText(text: Array<string>): string {
 
       let formattedCharacter = getFormattedCharacter(ch);
 
-      if (formattedCharacter === '<br>\n') {
-        formattedCharacter = preWrappedCloseTag.concat(formattedCharacter).concat(preWrappedOpenTag);
+      if (formattedCharacter === "<br>\n") {
+        formattedCharacter = preWrappedCloseTag
+          .concat(formattedCharacter)
+          .concat(preWrappedOpenTag);
       }
 
       sectionText = sectionText.concat(formattedCharacter);
@@ -312,28 +321,33 @@ function getSectionText(text: Array<string>): string {
       return sectionText;
     });
 
-    return chars.join('');
+    return chars.join("");
   }
 
-  return '';
+  return "";
 }
 
-
 /**
-* Function returns html for text depending on inline style tags applicable to it.
-*/
-export function addStylePropertyMarkup(styleSection: Object, customColors: Object): string {
+ * Function returns html for text depending on inline style tags applicable to it.
+ */
+export function addStylePropertyMarkup(
+  styleSection: Object,
+  customColors: Object
+): string {
   const { styles, text } = styleSection;
   const content = getSectionText(text);
 
-  if (styles && (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY)) {
+  if (
+    styles &&
+    (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY)
+  ) {
     let styleString = 'style="';
     if (styles.COLOR) {
-      let fontColor = customColors[styles.COLOR]
+      let fontColor = customColors[styles.COLOR];
       styleString += `color: ${fontColor};`;
     }
     if (styles.BGCOLOR) {
-      let bgColor = customColors[styles.BGCOLOR]
+      let bgColor = customColors[styles.BGCOLOR];
       styleString += `background-color: ${bgColor};`;
     }
     if (styles.FONTSIZE) {
@@ -341,6 +355,9 @@ export function addStylePropertyMarkup(styleSection: Object, customColors: Objec
     }
     if (styles.FONTFAMILY) {
       styleString += `font-family: ${styles.FONTFAMILY};`;
+    }
+    if (styles.UPPERCASE) {
+      styleString += `text-transform: ${styles.UPPERCASE};`;
     }
     styleString += '"';
     return `<span ${styleString}>${content}</span>`;
@@ -468,7 +485,10 @@ like color, background-color, font-size are applicable.
 */
 function getInlineStyleSectionMarkup(block: Object, styleSection: Object, customColors: Object): string {
   const stylePropertySections = getInlineStyleSections(
-    block, ['COLOR', 'BGCOLOR', 'FONTSIZE', 'FONTFAMILY'], styleSection.start, styleSection.end,
+    block,
+    ["COLOR", "BGCOLOR", "FONTSIZE", "FONTFAMILY", "UPPERCASE"],
+    styleSection.start,
+    styleSection.end
   );
   let styleSectionText = '';
   stylePropertySections.forEach((stylePropertySection) => {
@@ -493,7 +513,7 @@ function getSectionMarkup(
   const entityInlineMarkup = [];
   const inlineStyleSections = getInlineStyleSections(
     block,
-    ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT'],
+    ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE', 'SUPERSCRIPT', 'SUBSCRIPT', 'UPPERCASE'],
     section.start,
     section.end,
   );
