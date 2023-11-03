@@ -225,7 +225,7 @@ export function getStylesAtOffset(
     styles.SUPERSCRIPT = true;
   }
   if (inlineStyles.UPPERCASE[offset]) {
-    styles.UPPERCASE = "uppercase";
+    styles.UPPERCASE = true;
   }
   return styles;
 }
@@ -339,7 +339,7 @@ export function addStylePropertyMarkup(
 
   if (
     styles &&
-    (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY)
+    (styles.COLOR || styles.BGCOLOR || styles.FONTSIZE || styles.FONTFAMILY || styles.UPPERCASE)
   ) {
     let styleString = 'style="';
     if (styles.COLOR) {
@@ -357,7 +357,7 @@ export function addStylePropertyMarkup(
       styleString += `font-family: ${styles.FONTFAMILY};`;
     }
     if (styles.UPPERCASE) {
-      styleString += `text-transform: ${styles.UPPERCASE};`;
+      styleString += `text-transform: uppercase;`;
     }
     styleString += '"';
     return `<span ${styleString}>${content}</span>`;
