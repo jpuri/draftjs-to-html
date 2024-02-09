@@ -336,7 +336,8 @@ function getEntityMarkup(
   }
   if (entity.type === 'LINK') {
     const targetOption = entity.data.targetOption || '_self';
-    return `<a href="${entity.data.url}" target="${targetOption}">${text}</a>`;
+    const relOption = entity.data.relOption || 'noreferrer';
+    return `<a href="${entity.data.url}" target="${targetOption}" rel="${relOption}">${text}</a>`;
   }
   if (entity.type === 'IMAGE') {
     const { alignment } = entity.data;
